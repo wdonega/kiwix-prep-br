@@ -48,3 +48,25 @@ jobs:
           } > notas.md
           gh release create "$TAG" "$ZIM" "$ZIM.sha256" \
             --title "$PROJETO – $(date -u +%Y-%m-%d)" --notes-file notas.md --target "$GITHUB_SHA"
+
+      - name: Atualizar link fixo (release <pasta>-latest)
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PROJETO: ${{ inputs.projeto }}
+        run: |
+          # Link permanente para o README:
+          # https://github.com/<repo>/releases/download/<pasta>-latest/<pasta>_pt.zim
+          FIXO="$PROJETO-latest"
+          cp "$PROJETO"/*.zim "${PROJETO}_pt.zim"
+          sha256sum "${PROJETO}_pt.zim" > "${PROJETO}_pt.zim.sha256"
+          git tag -f "$FIXO" "$GITHUB_SHA"
+          git push -f origin "refs/tags/$FIXO"
+          {
+            echo "Versão mais recente de **$PROJETO**, sempre no mesmo endereço."
+            echo
+            echo "Atualizada em $(date -u +%Y-%m-%d) a partir do commit ${GITHUB_SHA::7}. Arquivo original: \`$(basename "$PROJETO"/*.zim)\`."
+          } > notas-fixo.md
+          gh release view "$FIXO" >/dev/null 2>&1 || \
+            gh release create "$FIXO" --title "$PROJETO – mais recente" --notes-file notas-fixo.md --latest=false
+          gh release upload "$FIXO" "${PROJETO}_pt.zim" "${PROJETO}_pt.zim.sha256" --clobber
+          gh release edit "$FIXO" --notes-file notas-fixo.md

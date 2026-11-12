@@ -2,7 +2,7 @@
 
 Guia offline do **Sisteminha Embrapa**: um sistema integrado de produção de alimentos para a agricultura familiar (tanque de peixes com biofiltro, galinhas, codornas, porquinhos-da-índia, horta, compostagem…). Os PDFs da Embrapa foram reescritos como páginas navegáveis e pesquisáveis, com figuras recortadas dos originais e crédito da fonte no topo de cada página.
 
-**Baixar:** [releases `sisteminha-embrapa-*`](https://github.com/wdonega/kiwix-prep-br/releases?q=sisteminha-embrapa&expanded=true)
+**Baixar:** [⬇️ sisteminha-embrapa_pt.zim](https://github.com/wdonega/kiwix-prep-br/releases/download/sisteminha-embrapa-latest/sisteminha-embrapa_pt.zim) (versão mais recente) · [versões anteriores](https://github.com/wdonega/kiwix-prep-br/releases?q=sisteminha-embrapa&expanded=true)
 
 ## Fontes
 

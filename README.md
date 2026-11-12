@@ -12,14 +12,14 @@ Quando a rede cai, numa enchente, num apagão, no sítio ou numa viagem, o que v
 
 | | Acervo | O que tem | Baixar |
 |---|---|---|---|
-| 🐟 | [**Sisteminha Embrapa**](sisteminha-embrapa) | Produção integrada de alimentos para a agricultura familiar: tanque de peixes com biofiltro, aves, horta e compostagem. Reescrito a partir dos PDFs da Embrapa, com figuras, calculadora e busca. | [releases](https://github.com/wdonega/kiwix-prep-br/releases?q=sisteminha-embrapa&expanded=true) |
-| 🌿 | [**Plantas Medicinais**](plantas-medicinais) | 85 plantas do Formulário de Fitoterápicos da Anvisa (fórmula, preparo, dose, advertências e foto), com seções de preparo caseiro, cultivo e uso seguro no SUS. | [releases](https://github.com/wdonega/kiwix-prep-br/releases?q=plantas-medicinais&expanded=true) |
+| 🐟 | [**Sisteminha Embrapa**](sisteminha-embrapa) | Produção integrada de alimentos para a agricultura familiar: tanque de peixes com biofiltro, aves, horta e compostagem. Reescrito a partir dos PDFs da Embrapa, com figuras, calculadora e busca. | **[⬇️ sisteminha-embrapa_pt.zim](https://github.com/wdonega/kiwix-prep-br/releases/download/sisteminha-embrapa-latest/sisteminha-embrapa_pt.zim)** (~16 MB)<br><sub>[sha256](https://github.com/wdonega/kiwix-prep-br/releases/download/sisteminha-embrapa-latest/sisteminha-embrapa_pt.zim.sha256) · [versões anteriores](https://github.com/wdonega/kiwix-prep-br/releases?q=sisteminha-embrapa&expanded=true)</sub> |
+| 🌿 | [**Plantas Medicinais**](plantas-medicinais) | 85 plantas do Formulário de Fitoterápicos da Anvisa (fórmula, preparo, dose, advertências e foto), com seções de preparo caseiro, cultivo e uso seguro no SUS. | **[⬇️ plantas-medicinais_pt.zim](https://github.com/wdonega/kiwix-prep-br/releases/download/plantas-medicinais-latest/plantas-medicinais_pt.zim)** (~29 MB)<br><sub>[sha256](https://github.com/wdonega/kiwix-prep-br/releases/download/plantas-medicinais-latest/plantas-medicinais_pt.zim.sha256) · [versões anteriores](https://github.com/wdonega/kiwix-prep-br/releases?q=plantas-medicinais&expanded=true)</sub> |
 
-Cada página cita a publicação e a página de origem, e os PDFs originais vão junto dentro do ZIM.
+O link de download é fixo e sempre aponta para a versão mais recente. Cada página do acervo cita a publicação e a página de origem, e os PDFs originais vão junto dentro do ZIM.
 
 ### Como as releases são geradas
 
-Cada acervo mora numa pasta e tem um workflow próprio no GitHub Actions. Um **push na `main` que mexe numa pasta** gera de novo **só aquele ZIM** e publica uma release com tag `<pasta>-AAAA-MM-DD-rN`, com o `.zim` e o `.sha256` anexados. Mudanças em outras pastas não disparam o build. Também dá para rodar à mão em *Actions → Run workflow*.
+Cada acervo mora numa pasta e tem um workflow próprio no GitHub Actions. Um **push na `main` que mexe numa pasta** gera de novo **só aquele ZIM** e publica uma release com tag `<pasta>-AAAA-MM-DD-rN`, com o `.zim` e o `.sha256` anexados. A release `<pasta>-latest` também é atualizada; é ela que mantém o link fixo da tabela acima. Mudanças em outras pastas não disparam o build. Também dá para rodar à mão em *Actions → Run workflow*.
 
 Para adicionar um acervo novo:
 1. Crie uma pasta com um `build.py` que gere um `*.zim` dentro dela.

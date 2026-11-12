@@ -9,7 +9,7 @@ Biblioteca offline sobre **plantas medicinais e fitoterapia**, montada a partir 
 
 > ⚕️ Material educativo. Não substitui a avaliação de um profissional de saúde.
 
-**Baixar:** [releases `plantas-medicinais-*`](https://github.com/wdonega/kiwix-prep-br/releases?q=plantas-medicinais&expanded=true)
+**Baixar:** [⬇️ plantas-medicinais_pt.zim](https://github.com/wdonega/kiwix-prep-br/releases/download/plantas-medicinais-latest/plantas-medicinais_pt.zim) (versão mais recente) · [versões anteriores](https://github.com/wdonega/kiwix-prep-br/releases?q=plantas-medicinais&expanded=true)
 
 ## Fontes
 

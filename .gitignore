@@ -1,0 +1,4 @@
+*.zim
+__pycache__/
+venv/
+.venv/

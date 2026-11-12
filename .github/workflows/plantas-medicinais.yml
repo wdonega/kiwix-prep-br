@@ -1,0 +1,15 @@
+name: plantas-medicinais
+on:
+  push:
+    branches: [main]
+    paths: ["plantas-medicinais/**"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  zim:
+    uses: ./.github/workflows/_build-zim.yml
+    with:
+      projeto: plantas-medicinais

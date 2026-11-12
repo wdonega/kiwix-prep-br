@@ -1,0 +1,50 @@
+# Workflow reutilizável: gera o .zim de um projeto (pasta) e publica como release.
+name: build-zim
+on:
+  workflow_call:
+    inputs:
+      projeto:
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Instalar dependências
+        run: pip install -r requirements.txt
+
+      - name: Gerar ZIM
+        working-directory: ${{ inputs.projeto }}
+        run: |
+          python build.py
+          ls -la *.zim
+
+      - name: Publicar release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PROJETO: ${{ inputs.projeto }}
+        run: |
+          ZIM=$(ls "$PROJETO"/*.zim)
+          TAG="$PROJETO-$(date -u +%Y-%m-%d)-r${GITHUB_RUN_NUMBER}"
+          TAM=$(du -h "$ZIM" | cut -f1)
+          sha256sum "$ZIM" | sed "s|$PROJETO/||" > "$ZIM.sha256"
+          {
+            echo "Arquivo ZIM **$(basename "$ZIM")** ($TAM) para abrir no [Kiwix](https://kiwix.org/)."
+            echo
+            echo "Gerado a partir do commit ${GITHUB_SHA::7}: $(git log -1 --pretty=%s)"
+            echo
+            echo "Fontes e créditos: [\`$PROJETO/\`](https://github.com/${GITHUB_REPOSITORY}/tree/${GITHUB_SHA}/$PROJETO)."
+          } > notas.md
+          gh release create "$TAG" "$ZIM" "$ZIM.sha256" \
+            --title "$PROJETO – $(date -u +%Y-%m-%d)" --notes-file notas.md --target "$GITHUB_SHA"

@@ -1,0 +1,4 @@
+libzim==4.1.0
+pymupdf==2.1
+Markdown==3.11.3
+pillow==13.0.0

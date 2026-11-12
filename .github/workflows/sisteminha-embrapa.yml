@@ -1,0 +1,15 @@
+name: sisteminha-embrapa
+on:
+  push:
+    branches: [main]
+    paths: ["sisteminha-embrapa/**"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  zim:
+    uses: ./.github/workflows/_build-zim.yml
+    with:
+      projeto: sisteminha-embrapa

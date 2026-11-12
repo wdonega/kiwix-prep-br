@@ -70,8 +70,6 @@ Ainda são poucos. Estes estão no GitHub e são de outras pessoas, então não 
 
 - [**sdalberto/ia-da-sobrevivencia**](https://github.com/sdalberto/ia-da-sobrevivencia): assistente de sobrevivência 100% offline (Windows, Linux e macOS), com guias com fontes sobre água, fogo, comida e primeiros socorros, IA local e bibliotecas Kiwix.
 - [**brenobernardes25-afk/biblioteca-offline**](https://github.com/brenobernardes25-afk/biblioteca-offline): biblioteca que funciona sem internet, com enciclopédias, manuais de saúde, agricultura e sobrevivência, mapas e IA local em português.
-- [**cezaraugustodev/protocolo-zero**](https://github.com/cezaraugustodev/protocolo-zero): biblioteca de sobrevivência offline em português, com manuais, enciclopédias, mapas e assistente de IA local.
-- [**AndreOvigli/ark-doomsday**](https://github.com/AndreOvigli/ark-doomsday): biblioteca de sobrevivência offline em português com busca local (RAG) sobre fontes oficiais. Experimental.
 
 Conhece outro? Abra uma *issue* ou um PR.
 

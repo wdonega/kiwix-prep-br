@@ -6,18 +6,18 @@ Quando a rede cai, numa enchente, num apagão, no sítio ou numa viagem, o que v
 
 > Projeto independente, sem relação oficial com o Kiwix ou com a Wikimedia. Os ZIMs são feitos para abrir no Kiwix.
 
-### 👀 Ver online antes de baixar
+### 👀 Confira o conteúdo antes de baixar
 
-Os acervos estão no ar em **[prep.bigode.org](https://prep.bigode.org/)**, servidos pelo próprio Kiwix: dá para navegar e buscar do navegador, do jeito que fica depois de baixado.
+Os acervos deste repositório estão no ar em **[prep.bigode.org](https://prep.bigode.org/)**, servidos pelo próprio Kiwix: dá para navegar e buscar pelo navegador e ver exatamente o que vem no ZIM antes de baixar.
 
 ---
 
 ## 📦 Acervos deste repositório
 
-| | Acervo | O que tem | Baixar |
-|---|---|---|---|
-| 🐟 | [**Sisteminha Embrapa**](sisteminha-embrapa) | Produção integrada de alimentos para a agricultura familiar: tanque de peixes com biofiltro, aves, horta e compostagem. Reescrito a partir dos PDFs da Embrapa, com figuras, calculadora e busca. | **[⬇️ sisteminha-embrapa_pt.zim](https://github.com/wdonega/kiwix-prep-br/releases/download/sisteminha-embrapa-latest/sisteminha-embrapa_pt.zim)** (~16 MB)<br><sub>[sha256](https://github.com/wdonega/kiwix-prep-br/releases/download/sisteminha-embrapa-latest/sisteminha-embrapa_pt.zim.sha256) · [versões anteriores](https://github.com/wdonega/kiwix-prep-br/releases?q=sisteminha-embrapa&expanded=true)</sub> |
-| 🌿 | [**Plantas Medicinais**](plantas-medicinais) | 85 plantas do Formulário de Fitoterápicos da Anvisa (fórmula, preparo, dose, advertências e foto), com seções de preparo caseiro, cultivo e uso seguro no SUS. | **[⬇️ plantas-medicinais_pt.zim](https://github.com/wdonega/kiwix-prep-br/releases/download/plantas-medicinais-latest/plantas-medicinais_pt.zim)** (~29 MB)<br><sub>[sha256](https://github.com/wdonega/kiwix-prep-br/releases/download/plantas-medicinais-latest/plantas-medicinais_pt.zim.sha256) · [versões anteriores](https://github.com/wdonega/kiwix-prep-br/releases?q=plantas-medicinais&expanded=true)</sub> |
+| | Acervo | O que tem | Conferir | Baixar |
+|---|---|---|---|---|
+| 🐟 | [**Sisteminha Embrapa**](sisteminha-embrapa) | Produção integrada de alimentos para a agricultura familiar: tanque de peixes com biofiltro, aves, horta e compostagem. Reescrito a partir dos PDFs da Embrapa, com figuras, calculadora e busca. | **[👀 ver online](https://prep.bigode.org/content/sisteminha-embrapa_pt/index)** | **[⬇️ sisteminha-embrapa_pt.zim](https://github.com/wdonega/kiwix-prep-br/releases/download/sisteminha-embrapa-latest/sisteminha-embrapa_pt.zim)** (~16 MB)<br><sub>[sha256](https://github.com/wdonega/kiwix-prep-br/releases/download/sisteminha-embrapa-latest/sisteminha-embrapa_pt.zim.sha256) · [versões anteriores](https://github.com/wdonega/kiwix-prep-br/releases?q=sisteminha-embrapa&expanded=true)</sub> |
+| 🌿 | [**Plantas Medicinais**](plantas-medicinais) | 85 plantas do Formulário de Fitoterápicos da Anvisa (fórmula, preparo, dose, advertências e foto), com seções de preparo caseiro, cultivo e uso seguro no SUS. | **[👀 ver online](https://prep.bigode.org/content/plantas-medicinais_pt/index)** | **[⬇️ plantas-medicinais_pt.zim](https://github.com/wdonega/kiwix-prep-br/releases/download/plantas-medicinais-latest/plantas-medicinais_pt.zim)** (~29 MB)<br><sub>[sha256](https://github.com/wdonega/kiwix-prep-br/releases/download/plantas-medicinais-latest/plantas-medicinais_pt.zim.sha256) · [versões anteriores](https://github.com/wdonega/kiwix-prep-br/releases?q=plantas-medicinais&expanded=true)</sub> |
 
 O link de download é fixo e sempre aponta para a versão mais recente. Cada página do acervo cita a publicação e a página de origem, e os PDFs originais vão junto dentro do ZIM.
 

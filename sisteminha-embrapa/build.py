@@ -4,6 +4,7 @@
 Uso:  python build.py [--html-dir DIR]   (requer: libzim, pymupdf, markdown, pillow)
 """
 import datetime
+import hashlib
 import html
 import io
 import json
@@ -20,6 +21,8 @@ from libzim.writer import Creator, Hint, Item, StringProvider
 AQUI = Path(__file__).resolve().parent
 CONTEUDO = AQUI / "conteudo"
 ASSETS = AQUI / "assets"
+# nome com hash do conteúdo: quando o CSS muda, a URL muda e o navegador não usa a versão velha do cache
+CSS = f"assets/estilo-{hashlib.sha1((ASSETS / 'estilo.css').read_bytes()).hexdigest()[:8]}.css"
 SAIDA = Path(os.environ.get("SAIDA_ZIM", AQUI / f"sisteminha-embrapa_pt_{datetime.date.today():%Y-%m}.zim"))
 
 DOCS = {  # chave -> (arquivo, título curto, rótulo curto p/ figuras)
@@ -299,7 +302,7 @@ def envolver(p: Pagina):
 <html lang="pt-BR"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{html.escape(p.titulo)}</title>
-<link rel="stylesheet" href="/assets/estilo.css">
+<link rel="stylesheet" href="/{CSS}">
 </head><body>
 <header class="topo"><a class="marca" href="/index">Sisteminha Embrapa <span>· biblioteca offline</span></a>
 <nav><a href="/index#indice">Índice</a><a href="/faq">Perguntas</a><a href="/glossario">Glossário</a><a href="/busca">Buscar</a></nav></header>
@@ -354,7 +357,7 @@ def main():
     js_indice = "window.INDICE=" + json.dumps(indice, ensure_ascii=False) + ";"
 
     estaticos = {
-        "assets/estilo.css": ((ASSETS / "estilo.css").read_bytes(), "text/css"),
+        CSS: ((ASSETS / "estilo.css").read_bytes(), "text/css"),
         "assets/busca.js": ((ASSETS / "busca.js").read_bytes(), "application/javascript"),
         "assets/calculadora.js": ((ASSETS / "calculadora.js").read_bytes(), "application/javascript"),
         "assets/indice-busca.js": (js_indice.encode(), "application/javascript"),

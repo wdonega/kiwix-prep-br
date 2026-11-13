@@ -2,13 +2,13 @@
 
 **Conhecimento útil que funciona sem internet, em português.**
 
-Quando a rede cai, numa enchente, num apagão, no sítio ou numa viagem, o que você precisa saber tem que estar **no seu computador, no celular ou num pendrive**. Este repositório gera acervos offline no formato **ZIM**, para abrir no [Kiwix](https://kiwix.org/), com foco em **preparação, autonomia e saúde**. Também reúne em um só lugar os outros acervos em português que valem a pena baixar.
+Quando a rede cai, numa enchente, num apagão, no sítio ou numa viagem, o que você precisa saber tem que estar **no seu computador, no celular ou num pendrive**. Este repositório gera acervos offline no formato **ZIM**, para abrir no [Kiwix](https://kiwix.org/), com foco em **preparação, autonomia e saúde**. Também reúne num só script os outros acervos em português que valem a pena baixar.
 
 > Projeto independente, sem relação oficial com o Kiwix ou com a Wikimedia. Os ZIMs são feitos para abrir no Kiwix.
 
 ### 👀 Confira o conteúdo antes de baixar
 
-Os acervos deste repositório estão no ar em **[prep.bigode.org](https://prep.bigode.org/)**, servidos pelo próprio Kiwix: dá para navegar e buscar pelo navegador e ver exatamente o que vem no ZIM antes de baixar.
+Todo o acervo deste README está no ar em **[prep.bigode.org](https://prep.bigode.org/#lang=por)**, servidos pelo próprio Kiwix: dá para navegar e buscar pelo navegador e ver exatamente o que vem no ZIM antes de baixar.
 
 ---
 
@@ -31,53 +31,44 @@ Para adicionar um acervo novo:
 
 ---
 
-## 📚 Wikipédia em português (oficial do Kiwix)
+## 📚 Outros acervos em português
 
-Os arquivos são gerados pelo próprio Kiwix e ficam em [download.kiwix.org/zim/wikipedia](https://download.kiwix.org/zim/wikipedia/). Os nomes mudam a cada edição; os da tabela são os de **nov/2026**.
+ZIMs oficiais do Kiwix, escolhidos para quem quer ter o essencial offline em português. Junto com os dois acervos acima, somam **~10 GB**.
 
-| Versão | O que é | Tamanho | Arquivo |
-|---|---|---|---|
-| **Completa com imagens** (`maxi`) | Todos os artigos, com fotos | ~19 GB | [`wikipedia_pt_all_maxi_2026-05.zim`](https://download.kiwix.org/zim/wikipedia/wikipedia_pt_all_maxi_2026-05.zim) |
-| **Completa sem imagens** (`nopic`) | Todos os artigos, só texto | ~6,6 GB | [`wikipedia_pt_all_nopic_2026-05.zim`](https://download.kiwix.org/zim/wikipedia/wikipedia_pt_all_nopic_2026-05.zim) |
-| **Resumida** (`mini`) | Só a introdução de cada artigo | ~1,6 GB | [`wikipedia_pt_all_mini_2026-05.zim`](https://download.kiwix.org/zim/wikipedia/wikipedia_pt_all_mini_2026-05.zim) |
-| **Top com imagens** | Os artigos mais lidos, com fotos | ~2,8 GB | [`wikipedia_pt_top_maxi_2026-10.zim`](https://download.kiwix.org/zim/wikipedia/wikipedia_pt_top_maxi_2026-10.zim) |
-| **Top sem imagens** | Os artigos mais lidos, só texto | ~1 GB | [`wikipedia_pt_top_nopic_2026-10.zim`](https://download.kiwix.org/zim/wikipedia/wikipedia_pt_top_nopic_2026-10.zim) |
+| | Acervo | O que tem | Tamanho | Conferir |
+|---|---|---|---|---|
+| **Enciclopédias** | Wikipédia: os 50 mil melhores artigos | Artigos completos, com imagens | 3,0 GB | [👀 ver online](https://prep.bigode.org/content/wikipedia_pt_top_maxi_2026-10) |
+|  | Wikipédia Medicina | Só os artigos de saúde, com imagens | 294 MB | [👀 ver online](https://prep.bigode.org/content/wikipedia_pt_medicine_maxi_2026-10) |
+|  | Vikidia | Enciclopédia para crianças e adolescentes | 19 MB | [👀 ver online](https://prep.bigode.org/content/vikidia_pt_all_maxi_2026-09) |
+| **Consertos** | iFixit | Guias de conserto passo a passo, com fotos | 3,6 GB | [👀 ver online](https://prep.bigode.org/content/ifixit_pt_all_2026-03) |
+| **Estudo** | Wikilivros | Livros didáticos e manuais | 169 MB | [👀 ver online](https://prep.bigode.org/content/wikibooks_pt_all_maxi_2026-10) |
+|  | Wikiversidade | Cursos e material de estudo | 101 MB | [👀 ver online](https://prep.bigode.org/content/wikiversity_pt_all_maxi_2026-10) |
+|  | PhET | Simulações interativas de ciências e matemática | 81 MB | [👀 ver online](https://prep.bigode.org/content/phet_pt_all_2026-08) |
+| **Livros e textos** | Wikisource | Textos em domínio público | 1,7 GB | [👀 ver online](https://prep.bigode.org/content/wikisource_pt_all_maxi_2026-10) |
+|  | Projeto Gutenberg | Livros clássicos em português | 523 MB | [👀 ver online](https://prep.bigode.org/content/gutenberg_pt_all_2025-10) |
+|  | Wikiquote | Citações | 90 MB | [👀 ver online](https://prep.bigode.org/content/wikiquote_pt_all_maxi_2026-10) |
+| **Língua e viagem** | Wikcionário | Dicionário (sem imagens) | 370 MB | [👀 ver online](https://prep.bigode.org/content/wiktionary_pt_all_nopic_2026-09) |
+|  | Portuguese Language Q&A | Perguntas e respostas sobre a língua portuguesa (a maioria em inglês) | 21 MB | [👀 ver online](https://prep.bigode.org/content/portuguese.stackexchange.com_mul_all_2026-10) |
+|  | Wikivoyage | Guia de viagem | 57 MB | [👀 ver online](https://prep.bigode.org/content/wikivoyage_pt_all_maxi_2026-09) |
 
-### 🩺 Wikipédia Medicina (WikiProject Medicine) em português
+### ⬇️ Baixar tudo de uma vez
 
-Só os artigos de saúde, ótimo para ter no celular.
+O script [`baixar-acervo-pt.sh`](baixar-acervo-pt.sh) baixa os 15 ZIMs, os dois deste repositório e os 13 acima, direto do GitHub e do [download.kiwix.org](https://download.kiwix.org/zim/):
 
-| Versão | Tamanho | Arquivo |
-|---|---|---|
-| Com imagens (`maxi`) | ~281 MB | [`wikipedia_pt_medicine_maxi_2026-10.zim`](https://download.kiwix.org/zim/wikipedia/wikipedia_pt_medicine_maxi_2026-10.zim) |
-| Sem imagens (`nopic`) | ~116 MB | [`wikipedia_pt_medicine_nopic_2026-10.zim`](https://download.kiwix.org/zim/wikipedia/wikipedia_pt_medicine_nopic_2026-10.zim) |
+```bash
+cd /pasta/dos/zims
+curl -fLO https://raw.githubusercontent.com/wdonega/kiwix-prep-br/main/baixar-acervo-pt.sh
+sh baixar-acervo-pt.sh
+```
 
-### Outros projetos Wikimedia em português
-
-| Acervo | Para quê | Tamanho |
-|---|---|---|
-| [Wikilivros](https://download.kiwix.org/zim/wikibooks/) (`wikibooks_pt_all_nopic`) | Livros didáticos e manuais | ~55 MB |
-| [Wikcionário](https://download.kiwix.org/zim/wiktionary/) (`wiktionary_pt_all_nopic`) | Dicionário | ~353 MB |
-| [Wikiversidade](https://download.kiwix.org/zim/wikiversity/) (`wikiversity_pt_all_nopic`) | Cursos e material de estudo | ~44 MB |
-| [Wikivoyage](https://download.kiwix.org/zim/wikivoyage/) (`wikivoyage_pt_all_nopic`) | Guia de viagem | ~17 MB |
-| [Wikisource](https://download.kiwix.org/zim/wikisource/) (`wikisource_pt_all_nopic`) | Textos em domínio público | ~1,5 GB |
-
-Para ver tudo o que existe em português, use [library.kiwix.org](https://library.kiwix.org/#lang=por).
-
-💡 **Qual baixar?** Num celular com pouco espaço, comece pela *Medicina nopic* e pela *Top nopic*. Num notebook ou HD externo, pegue a *Completa maxi* junto com a *Medicina maxi*. Para um Raspberry Pi servindo a família toda, junte tudo e rode o `kiwix-serve` (veja abaixo).
+- Se a conexão cair, rode de novo: o download continua de onde parou.
+- Para pular algum, comente a linha com `#`. Os tamanhos estão ao lado de cada uma.
+- Os nomes dos ZIMs do Kiwix têm a data da edição (são os de **nov/2026**). Quando sair uma edição nova e a antiga for apagada, o link dá erro 404: troque pela data mais recente em `download.kiwix.org/zim/<pasta>/`.
+- Quer a Wikipédia **inteira**? Troque a linha da Top por [`wikipedia_pt_all_maxi_2026-05.zim`](https://download.kiwix.org/zim/wikipedia/wikipedia_pt_all_maxi_2026-05.zim) (~20 GB, todos os artigos com imagens) ou [`wikipedia_pt_all_nopic_2026-05.zim`](https://download.kiwix.org/zim/wikipedia/wikipedia_pt_all_nopic_2026-05.zim) (~6,6 GB, sem imagens).
 
 ---
 
-## 🇧🇷 Outros projetos brasileiros de preparação offline
-
-Ainda são poucos. Estes estão no GitHub e são de outras pessoas, então não foram auditados aqui. Confira a origem do conteúdo antes de confiar.
-
-- [**sdalberto/ia-da-sobrevivencia**](https://github.com/sdalberto/ia-da-sobrevivencia): assistente de sobrevivência 100% offline (Windows, Linux e macOS), com guias com fontes sobre água, fogo, comida e primeiros socorros, IA local e bibliotecas Kiwix.
-- [**brenobernardes25-afk/biblioteca-offline**](https://github.com/brenobernardes25-afk/biblioteca-offline): biblioteca que funciona sem internet, com enciclopédias, manuais de saúde, agricultura e sobrevivência, mapas e IA local em português.
-
-Conhece outro? Abra uma *issue* ou um PR.
-
-### Fontes oficiais boas para virar ZIM
+## 🌱 Próximos acervos
 
 Ideias para os próximos acervos, todas de órgãos públicos:
 
@@ -112,6 +103,6 @@ cd plantas-medicinais && ../venv/bin/python build.py   # gera plantas-medicinais
 - O **código** (`build.py`, scripts, CSS e JS) pode ser usado livremente.
 - O **conteúdo** vem de publicações públicas da Embrapa, da Anvisa e do Ministério da Saúde, reorganizadas para uso **pessoal e educativo, sem fins comerciais**. Toda página cita a fonte. Os créditos completos estão no README de cada acervo e dentro de cada ZIM.
 - As **fotos** do acervo de plantas vêm do Wikimedia Commons, com licenças livres, e o autor é creditado em cada imagem.
-- Os acervos da Wikipédia são do Kiwix e da Wikimedia, sob a licença CC BY-SA.
+- Os outros acervos são gerados pelo Kiwix e seguem a licença de cada projeto de origem (os da Wikimedia, por exemplo, são CC BY-SA).
 
 > ⚕️ Os acervos de saúde são educativos e **não substituem um profissional de saúde**.

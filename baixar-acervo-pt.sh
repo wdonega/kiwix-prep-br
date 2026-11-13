@@ -1,12 +1,12 @@
 #!/bin/sh
-# Baixa o acervo em português do kiwix-prep-br (o mesmo que está em https://prep.bigode.org).
+# Baixa o acervo em português do prep-wiki-br (o mesmo que está em https://prep.bigode.org).
 # Uso: rode dentro da pasta onde ficam os ZIMs, por exemplo:
 #   cd /kiwix-data && sh baixar-acervo-pt.sh
 # Se a conexão cair, rode de novo: o download continua de onde parou.
 # Comente com # as linhas do que não quiser. Total: ~10 GB.
 set -e
 K=https://download.kiwix.org/zim
-G=https://github.com/wdonega/kiwix-prep-br/releases/download
+G=https://github.com/wdonega/prep-wiki-br/releases/download
 
 baixar() { curl -fL --retry 5 --retry-delay 10 -C - -O "$1"; }
 

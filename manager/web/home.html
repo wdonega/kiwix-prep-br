@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Prep Wiki BR · biblioteca offline</title>
+<link rel="icon" href="/prep/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/prep/base.css">
+<link rel="stylesheet" href="/prep/home.css">
+</head>
+<body>
+<header class="topo">
+  <div class="topo-in">
+    <a class="marca" href="/" aria-label="Prep Wiki BR, página inicial">
+      <span class="marca-logo"><svg class="i" aria-hidden="true"><use href="/prep/icones.svg#i-backpack"/></svg></span>
+      <span class="marca-nome">Prep Wiki BR</span>
+    </a>
+    <form class="busca" id="busca" role="search" autocomplete="off">
+      <svg class="i" aria-hidden="true"><use href="/prep/icones.svg#i-search"/></svg>
+      <input id="q" type="search" name="q" placeholder="Buscar nos acervos…" aria-label="Buscar nos acervos" enterkeyhint="search">
+      <kbd aria-hidden="true">/</kbd>
+    </form>
+    <nav class="topo-acoes" aria-label="Opções">
+      <a class="btn" href="/admin/" aria-label="Gerenciar acervo">
+        <svg class="i" aria-hidden="true"><use href="/prep/icones.svg#i-settings"/></svg><span class="rot">Gerenciar</span>
+      </a>
+    </nav>
+  </div>
+</header>
+
+<main class="conteudo">
+  <section class="hero">
+    <h1>Biblioteca</h1>
+    <p class="hero-sub">
+      <span id="resumo">Carregando…</span>
+      <span class="selo-off"><svg class="i" aria-hidden="true"><use href="/prep/icones.svg#i-wifi-off"/></svg>funciona sem internet</span>
+    </p>
+  </section>
+  <div id="filtros" class="filtros" hidden></div>
+  <div id="lista" aria-live="polite"></div>
+</main>
+
+<footer class="rodape">
+  Prep Wiki BR<span class="sep">·</span>conhecimento offline em português<span class="sep">·</span>
+  <a href="https://github.com/wdonega/prep-wiki-br" target="_blank" rel="noopener">
+    <svg class="i" aria-hidden="true"><use href="/prep/icones.svg#i-github"/></svg>GitHub</a>
+</footer>
+<script src="/prep/home.js"></script>
+</body>
+</html>

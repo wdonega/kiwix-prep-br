@@ -1,0 +1,45 @@
+name: imagem
+
+# Monta a imagem do Prep Wiki BR para PC (amd64) e ARM de 64 bits (arm64, Raspberry Pi)
+# e publica em ghcr.io/wdonega/prep-wiki-br. Roda quando algo em manager/ muda.
+on:
+  push:
+    branches: [main]
+    paths: ["manager/**", ".github/workflows/imagem.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+concurrency:
+  group: imagem
+  cancel-in-progress: true
+
+jobs:
+  imagem:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: docker/build-push-action@v6
+        with:
+          context: manager
+          # o Go compila para a arquitetura de destino na própria máquina do build: não precisa de emulação
+          platforms: linux/amd64,linux/arm64
+          push: true
+          provenance: false
+          tags: |
+            ghcr.io/${{ github.repository }}:latest
+            ghcr.io/${{ github.repository }}:${{ github.sha }}
+          labels: |
+            org.opencontainers.image.source=https://github.com/${{ github.repository }}
+            org.opencontainers.image.title=Prep Wiki BR
+            org.opencontainers.image.description=Biblioteca offline de preparação, autonomia e saúde em português
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

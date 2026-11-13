@@ -1,0 +1,7 @@
+# os ZIMs baixados ficam fora do git; a pasta em si vai (vazia), para já existir com o dono certo depois do clone
+dados/*
+!dados/.gitkeep
+.env
+/prep-manager
+/prep-manager.exe
+/dist/

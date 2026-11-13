@@ -1,0 +1,32 @@
+name: prep-wiki-br
+
+# Prep Wiki BR: a biblioteca (/) e o gerenciador (/admin/) numa porta só.
+#
+#   docker compose up -d --build
+#   abra http://localhost:8099
+#
+# Para mudar algo, crie um arquivo .env ao lado deste:
+#   PREP_PORTA=8099        porta na sua máquina
+#   PREP_PASTA=./dados     onde ficam os ZIMs baixados (a pasta precisa existir e ser do usuário abaixo)
+#   PREP_UID=1000          usuário e grupo donos da pasta (veja os seus com: id -u ; id -g)
+#   PREP_GID=1000
+services:
+  prep:
+    build: .
+    image: prep-wiki-br
+    container_name: prep-wiki-br
+    user: "${PREP_UID:-1000}:${PREP_GID:-1000}"
+    ports:
+      - "${PREP_PORTA:-8099}:8080"
+    volumes:
+      - ${PREP_PASTA:-./dados}:/data
+    environment:
+      TZ: America/Sao_Paulo
+    # o gerenciador só escreve na pasta dos ZIMs; o resto do container é só leitura e sem privilégios
+    read_only: true
+    tmpfs:
+      - /tmp:size=16m,mode=1777,noexec,nosuid,nodev
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped

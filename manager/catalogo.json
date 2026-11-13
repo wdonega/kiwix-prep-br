@@ -1,0 +1,113 @@
+{
+  "versao": 5,
+  "grupos": [
+    {"id": "projeto", "titulo": "Deste projeto"},
+    {"id": "wikipedia", "titulo": "Wikipédia", "dica": "escolha uma"},
+    {"id": "wikipedia-temas", "titulo": "Wikipédia por tema", "dica": "já estão dentro da Wikipédia completa"},
+    {"id": "estudo", "titulo": "Estudo"},
+    {"id": "consertos", "titulo": "Consertos"},
+    {"id": "programacao", "titulo": "Programação"},
+    {"id": "livros", "titulo": "Livros e textos"},
+    {"id": "lingua", "titulo": "Língua e viagem"},
+    {"id": "mapas", "titulo": "Mapas", "dica": "interface em inglês"},
+    {"id": "prepper", "titulo": "Prepper", "dica": "em inglês"}
+  ],
+  "zims": [
+    {"id": "sisteminha-embrapa_pt", "origem": "github", "repo": "wdonega/prep-wiki-br", "tag": "sisteminha-embrapa-latest", "arquivo": "sisteminha-embrapa_pt.zim", "grupo": "projeto", "titulo": "Sisteminha Embrapa", "descricao": "Produção integrada de alimentos no quintal: tanque de peixes com biofiltro, aves, horta e compostagem."},
+    {"id": "plantas-medicinais_pt", "origem": "github", "repo": "wdonega/prep-wiki-br", "tag": "plantas-medicinais-latest", "arquivo": "plantas-medicinais_pt.zim", "grupo": "projeto", "titulo": "Plantas Medicinais", "descricao": "85 plantas do Formulário de Fitoterápicos da Anvisa, com preparo, cultivo e uso seguro no SUS."},
+
+    {"id": "wikipedia_pt_all_maxi", "origem": "kiwix", "pasta": "wikipedia", "grupo": "wikipedia", "titulo": "Wikipédia completa · com imagens", "descricao": "Todos os artigos, completos, com imagens. A versão mais pesada."},
+    {"id": "wikipedia_pt_all_nopic", "origem": "kiwix", "pasta": "wikipedia", "grupo": "wikipedia", "titulo": "Wikipédia completa · sem imagens", "descricao": "Todos os artigos, completos, só texto."},
+    {"id": "wikipedia_pt_all_mini", "origem": "kiwix", "pasta": "wikipedia", "grupo": "wikipedia", "titulo": "Wikipédia completa · resumida", "descricao": "Todos os artigos, mas só a introdução de cada um, sem imagens."},
+    {"id": "wikipedia_pt_top_maxi", "origem": "kiwix", "pasta": "wikipedia", "grupo": "wikipedia", "titulo": "Wikipédia: 50 mil melhores · com imagens", "descricao": "Os artigos mais lidos, completos, com imagens."},
+    {"id": "wikipedia_pt_top_nopic", "origem": "kiwix", "pasta": "wikipedia", "grupo": "wikipedia", "titulo": "Wikipédia: 50 mil melhores · sem imagens", "descricao": "Os artigos mais lidos, completos, só texto. Boa para celular."},
+    {"id": "wikipedia_pt_top_mini", "origem": "kiwix", "pasta": "wikipedia", "grupo": "wikipedia", "titulo": "Wikipédia: 50 mil melhores · resumida", "descricao": "Os artigos mais lidos, só a introdução, sem imagens."},
+
+    {"id": "wikipedia_pt_medicine_maxi", "origem": "kiwix", "pasta": "wikipedia", "grupo": "wikipedia-temas", "titulo": "Medicina · com imagens", "descricao": "Os artigos de saúde da Wikipédia, com imagens."},
+    {"id": "wikipedia_pt_medicine_nopic", "origem": "kiwix", "pasta": "wikipedia", "grupo": "wikipedia-temas", "titulo": "Medicina · sem imagens", "descricao": "Os artigos de saúde da Wikipédia, só texto."},
+    {"id": "wikipedia_pt_chemistry_maxi", "origem": "kiwix", "pasta": "wikipedia", "grupo": "wikipedia-temas", "titulo": "Química", "descricao": "Os artigos de química da Wikipédia, com imagens."},
+    {"id": "wikipedia_pt_physics_maxi", "origem": "kiwix", "pasta": "wikipedia", "grupo": "wikipedia-temas", "titulo": "Física", "descricao": "Os artigos de física da Wikipédia, com imagens."},
+    {"id": "wikipedia_pt_mathematics_maxi", "origem": "kiwix", "pasta": "wikipedia", "grupo": "wikipedia-temas", "titulo": "Matemática", "descricao": "Os artigos de matemática da Wikipédia, com imagens."},
+    {"id": "wikipedia_pt_molcell_maxi", "origem": "kiwix", "pasta": "wikipedia", "grupo": "wikipedia-temas", "titulo": "Biologia molecular e celular", "descricao": "Os artigos de biologia molecular e celular da Wikipédia, com imagens."},
+    {"id": "wikipedia_pt_history_maxi", "origem": "kiwix", "pasta": "wikipedia", "grupo": "wikipedia-temas", "titulo": "História", "descricao": "Os artigos de história da Wikipédia, com imagens."},
+    {"id": "wikipedia_pt_geography_maxi", "origem": "kiwix", "pasta": "wikipedia", "grupo": "wikipedia-temas", "titulo": "Geografia", "descricao": "Os artigos de geografia da Wikipédia, com imagens."},
+    {"id": "wikipedia_pt_computer_maxi", "origem": "kiwix", "pasta": "wikipedia", "grupo": "wikipedia-temas", "titulo": "Computação", "descricao": "Os artigos de computação da Wikipédia, com imagens."},
+
+    {"id": "vikidia_pt_all_maxi", "origem": "kiwix", "pasta": "vikidia", "grupo": "estudo", "titulo": "Vikidia", "descricao": "Enciclopédia para crianças e adolescentes."},
+    {"id": "wikibooks_pt_all_maxi", "origem": "kiwix", "pasta": "wikibooks", "grupo": "estudo", "titulo": "Wikilivros", "descricao": "Livros didáticos e manuais."},
+    {"id": "wikiversity_pt_all_maxi", "origem": "kiwix", "pasta": "wikiversity", "grupo": "estudo", "titulo": "Wikiversidade", "descricao": "Cursos e material de estudo."},
+    {"id": "phet_pt_all", "origem": "kiwix", "pasta": "phet", "grupo": "estudo", "titulo": "PhET", "descricao": "Simulações interativas de ciências e matemática."},
+
+    {"id": "ifixit_pt_all", "origem": "kiwix", "pasta": "ifixit", "grupo": "consertos", "titulo": "iFixit", "descricao": "Guias de conserto passo a passo, com fotos."},
+
+    {"id": "pt.stackoverflow.com_mul_all", "origem": "kiwix", "pasta": "stack_exchange", "grupo": "programacao", "titulo": "Stack Overflow em Português", "descricao": "Perguntas e respostas para programadores."},
+    {"id": "freecodecamp_pt_all", "origem": "kiwix", "pasta": "freecodecamp", "grupo": "programacao", "titulo": "freeCodeCamp", "descricao": "Todos os cursos de programação do freeCodeCamp, em português."},
+
+    {"id": "wikisource_pt_all_maxi", "origem": "kiwix", "pasta": "wikisource", "grupo": "livros", "titulo": "Wikisource", "descricao": "Textos em domínio público."},
+    {"id": "gutenberg_pt_all", "origem": "kiwix", "pasta": "gutenberg", "grupo": "livros", "titulo": "Projeto Gutenberg", "descricao": "Livros clássicos em português."},
+    {"id": "wikiquote_pt_all_maxi", "origem": "kiwix", "pasta": "wikiquote", "grupo": "livros", "titulo": "Wikiquote", "descricao": "Citações."},
+
+    {"id": "wiktionary_pt_all_nopic", "origem": "kiwix", "pasta": "wiktionary", "grupo": "lingua", "titulo": "Wikcionário", "descricao": "Dicionário (sem imagens)."},
+    {"id": "portuguese.stackexchange.com_mul_all", "origem": "kiwix", "pasta": "stack_exchange", "grupo": "lingua", "titulo": "Portuguese Language Q&A", "descricao": "Perguntas e respostas sobre a língua portuguesa (a maioria em inglês)."},
+    {"id": "wikivoyage_pt_all_maxi", "origem": "kiwix", "pasta": "wikivoyage", "grupo": "lingua", "titulo": "Wikivoyage", "descricao": "Guia de viagem."},
+
+    {"id": "maps_en_brazil", "origem": "kiwix", "pasta": "maps", "grupo": "mapas", "titulo": "Mapa do Brasil", "descricao": "Mapa completo, com estradas e pontos de referência."},
+    {"id": "maps_en_south-america", "origem": "kiwix", "pasta": "maps", "grupo": "mapas", "titulo": "Mapa da América do Sul", "descricao": "Mapa completo do continente, com estradas e pontos de referência."},
+
+    {"id": "zimgit-post-disaster_en", "origem": "kiwix", "pasta": "other", "grupo": "prepper", "tema": "Preparação e sobrevivência", "titulo": "Post Disaster Resource Library", "descricao": "Coleção de materiais para depois de um desastre."},
+    {"id": "ready.gov_en_all", "origem": "kiwix", "pasta": "zimit", "grupo": "prepper", "tema": "Preparação e sobrevivência", "titulo": "Ready.gov", "descricao": "Planos e kits de emergência do governo dos EUA, para cada tipo de desastre."},
+    {"id": "trueprepper.com_en_all", "origem": "kiwix", "pasta": "other", "grupo": "prepper", "tema": "Preparação e sobrevivência", "titulo": "True Prepper", "descricao": "Guias práticos de preparação: kits, listas e armazenamento."},
+    {"id": "survivorlibrary.com_en_all", "origem": "kiwix", "pasta": "zimit", "grupo": "prepper", "tema": "Preparação e sobrevivência", "titulo": "Survivor Library", "descricao": "Biblioteca de livros sobre como viver quando a tecnologia falha. É enorme."},
+    {"id": "armypubs_en_all", "origem": "kiwix", "pasta": "zimit", "grupo": "prepper", "tema": "Preparação e sobrevivência", "titulo": "Manuais do Exército dos EUA", "descricao": "Publicações oficiais do Army Publishing Directorate, incluindo os manuais de campo."},
+    {"id": "zimgit-knots_en", "origem": "kiwix", "pasta": "other", "grupo": "prepper", "tema": "Preparação e sobrevivência", "titulo": "A Library of Knots", "descricao": "Material ilustrado sobre nós, amarrações, escadas e suturas."},
+    {"id": "wikipedia_en_knots_maxi", "origem": "kiwix", "pasta": "wikipedia", "grupo": "prepper", "tema": "Preparação e sobrevivência", "titulo": "Nós (Wikipédia em inglês)", "descricao": "Os artigos da Wikipédia em inglês sobre nós."},
+    {"id": "outdoors.stackexchange.com_en_all", "origem": "kiwix", "pasta": "stack_exchange", "grupo": "prepper", "tema": "Preparação e sobrevivência", "titulo": "The Great Outdoors Q&A", "descricao": "Perguntas e respostas sobre acampamento, trilha e vida ao ar livre."},
+    {"id": "ham.stackexchange.com_en_all", "origem": "kiwix", "pasta": "stack_exchange", "grupo": "prepper", "tema": "Preparação e sobrevivência", "titulo": "Amateur Radio Q&A", "descricao": "Perguntas e respostas sobre radioamadorismo."},
+    {"id": "rabbitwaves.ca_en_all", "origem": "kiwix", "pasta": "zimit", "grupo": "prepper", "tema": "Preparação e sobrevivência", "titulo": "Rabbit Waves", "descricao": "Conhecimento útil em forma de quadrinhos."},
+
+    {"id": "zimgit-water_en", "origem": "kiwix", "pasta": "other", "grupo": "prepper", "tema": "Água, comida e horta", "titulo": "Water Treatment Library", "descricao": "Materiais sobre coleta e purificação de água."},
+    {"id": "zimgit-food-preparation_en", "origem": "kiwix", "pasta": "other", "grupo": "prepper", "tema": "Água, comida e horta", "titulo": "Food for Preppers", "descricao": "Receitas e técnicas de preparo de alimentos."},
+    {"id": "usda-2015_en", "origem": "kiwix", "pasta": "other", "grupo": "prepper", "tema": "Água, comida e horta", "titulo": "Guia de conservas caseiras (USDA)", "descricao": "Recomendações do Departamento de Agricultura dos EUA para fazer conservas em casa com segurança."},
+    {"id": "gardening.stackexchange.com_en_all", "origem": "kiwix", "pasta": "stack_exchange", "grupo": "prepper", "tema": "Água, comida e horta", "titulo": "Gardening & Landscaping Q&A", "descricao": "Perguntas e respostas sobre horta e jardinagem."},
+    {"id": "gardenology.org_en_all", "origem": "kiwix", "pasta": "other", "grupo": "prepper", "tema": "Água, comida e horta", "titulo": "Gardenology", "descricao": "Enciclopédia de plantas e jardinagem."},
+    {"id": "cooking.stackexchange.com_en_all", "origem": "kiwix", "pasta": "stack_exchange", "grupo": "prepper", "tema": "Água, comida e horta", "titulo": "Seasoned Advice Q&A", "descricao": "Perguntas e respostas sobre cozinha."},
+    {"id": "grimgrains_en_all", "origem": "kiwix", "pasta": "zimit", "grupo": "prepper", "tema": "Água, comida e horta", "titulo": "Grim Grains", "descricao": "Receitas de Rek Bell e Devine Lu Linvega, do Hundred Rabbits."},
+    {"id": "based.cooking_en_all", "origem": "kiwix", "pasta": "zimit", "grupo": "prepper", "tema": "Água, comida e horta", "titulo": "Based Cooking", "descricao": "Receitas simples enviadas pela comunidade."},
+    {"id": "sustainability.stackexchange.com_en_all", "origem": "kiwix", "pasta": "stack_exchange", "grupo": "prepper", "tema": "Água, comida e horta", "titulo": "Sustainable Living Q&A", "descricao": "Perguntas e respostas sobre vida sustentável."},
+
+    {"id": "zimgit-medicine_en", "origem": "kiwix", "pasta": "other", "grupo": "prepper", "tema": "Saúde", "titulo": "Medical Library", "descricao": "Livros de medicina de campo e de emergência."},
+    {"id": "mdwiki_en_all_maxi", "origem": "kiwix", "pasta": "other", "grupo": "prepper", "tema": "Saúde", "titulo": "MDWiki", "descricao": "Enciclopédia médica com artigos de saúde curados pelo WikiProjectMed."},
+    {"id": "wikipedia_en_medicine_maxi", "origem": "kiwix", "pasta": "wikipedia", "grupo": "prepper", "tema": "Saúde", "titulo": "Medicina (Wikipédia em inglês)", "descricao": "Os artigos de saúde da Wikipédia em inglês, com imagens."},
+    {"id": "medlineplus.gov_en_all", "origem": "kiwix", "pasta": "zimit", "grupo": "prepper", "tema": "Saúde", "titulo": "MedlinePlus", "descricao": "Informação de saúde para o público, da Biblioteca Nacional de Medicina dos EUA."},
+    {"id": "nhs.uk_en_medicines", "origem": "kiwix", "pasta": "zimit", "grupo": "prepper", "tema": "Saúde", "titulo": "Remédios de A a Z (NHS)", "descricao": "Como cada remédio funciona, como e quando tomar. Do serviço de saúde britânico."},
+    {"id": "wwwnc.cdc.gov_en_all", "origem": "kiwix", "pasta": "zimit", "grupo": "prepper", "tema": "Saúde", "titulo": "Saúde do viajante (CDC)", "descricao": "Orientações do Centro de Controle de Doenças dos EUA para viajantes."},
+    {"id": "irp.fas.org_en_military-medicine", "origem": "kiwix", "pasta": "zimit", "grupo": "prepper", "tema": "Saúde", "titulo": "Military Medicine", "descricao": "Manuais doutrinários e de instrução de medicina militar."},
+    {"id": "quickguidesformedicine_en_all", "origem": "kiwix", "pasta": "videos", "grupo": "prepper", "tema": "Saúde", "titulo": "Surviving Residency", "descricao": "Guias rápidos de medicina, em vídeo."},
+    {"id": "wikivet.net_en_all_maxi", "origem": "kiwix", "pasta": "other", "grupo": "prepper", "tema": "Saúde", "titulo": "WikiVet", "descricao": "Enciclopédia de medicina veterinária."},
+
+    {"id": "solar.lowtechmagazine.com_mul_all", "origem": "kiwix", "pasta": "zimit", "grupo": "prepper", "tema": "Energia e baixa tecnologia", "titulo": "Low-tech Magazine", "descricao": "Nem todo problema tem solução de alta tecnologia: energia, aquecimento, transporte e ferramentas de baixa tecnologia."},
+    {"id": "100r.co_en_all", "origem": "kiwix", "pasta": "zimit", "grupo": "prepper", "tema": "Energia e baixa tecnologia", "titulo": "Hundred Rabbits", "descricao": "Pesquisa e testes de soluções de baixa tecnologia, documentados."},
+    {"id": "appropedia_en_all_maxi", "origem": "kiwix", "pasta": "other", "grupo": "prepper", "tema": "Energia e baixa tecnologia", "titulo": "Appropedia", "descricao": "Conhecimento compartilhado sobre tecnologia apropriada e vida sustentável."},
+    {"id": "energypedia_en_all_maxi", "origem": "kiwix", "pasta": "other", "grupo": "prepper", "tema": "Energia e baixa tecnologia", "titulo": "energypedia", "descricao": "Energia renovável e acesso à energia."},
+    {"id": "cd3wdproject.org_en_all", "origem": "kiwix", "pasta": "zimit", "grupo": "prepper", "tema": "Energia e baixa tecnologia", "titulo": "CD3WD", "descricao": "Mais de 900 documentos técnicos sobre desenvolvimento sustentável."},
+    {"id": "permacomputing.net_en_all", "origem": "kiwix", "pasta": "zimit", "grupo": "prepper", "tema": "Energia e baixa tecnologia", "titulo": "Permacomputing", "descricao": "Resiliência e regeneração na tecnologia digital."},
+
+    {"id": "ifixit_en_all", "origem": "kiwix", "pasta": "ifixit", "grupo": "prepper", "tema": "Consertos e habilidades", "titulo": "iFixit (em inglês)", "descricao": "Guias de conserto passo a passo, com fotos. Tem mais guias que a versão em português."},
+    {"id": "restarters_en_all_maxi", "origem": "kiwix", "pasta": "other", "grupo": "prepper", "tema": "Consertos e habilidades", "titulo": "Restarters", "descricao": "Como as coisas funcionam e como consertá-las."},
+    {"id": "diy.stackexchange.com_en_all", "origem": "kiwix", "pasta": "stack_exchange", "grupo": "prepper", "tema": "Consertos e habilidades", "titulo": "Home Improvement Q&A", "descricao": "Perguntas e respostas sobre reforma e manutenção da casa."},
+    {"id": "mechanics.stackexchange.com_en_all", "origem": "kiwix", "pasta": "stack_exchange", "grupo": "prepper", "tema": "Consertos e habilidades", "titulo": "Motor Vehicle Maintenance Q&A", "descricao": "Perguntas e respostas sobre mecânica de carros e motos."},
+    {"id": "electronics.stackexchange.com_en_all", "origem": "kiwix", "pasta": "stack_exchange", "grupo": "prepper", "tema": "Consertos e habilidades", "titulo": "Electrical Engineering Q&A", "descricao": "Perguntas e respostas sobre eletrônica."},
+    {"id": "woodworking.stackexchange.com_en_all", "origem": "kiwix", "pasta": "stack_exchange", "grupo": "prepper", "tema": "Consertos e habilidades", "titulo": "Woodworking Q&A", "descricao": "Perguntas e respostas sobre marcenaria."},
+    {"id": "bicycles.stackexchange.com_en_all", "origem": "kiwix", "pasta": "stack_exchange", "grupo": "prepper", "tema": "Consertos e habilidades", "titulo": "Bicycles Q&A", "descricao": "Perguntas e respostas sobre bicicletas e sua manutenção."},
+
+    {"id": "lrnselfreliance_en_all", "origem": "kiwix", "pasta": "videos", "grupo": "prepper", "tema": "Vídeos", "titulo": "Learning Self-Reliance", "descricao": "Canal sobre preparação, sobrevivência e apicultura."},
+    {"id": "urban-prepper_en_all", "origem": "kiwix", "pasta": "videos", "grupo": "prepper", "tema": "Vídeos", "titulo": "Urban Prepper", "descricao": "Preparação para emergências na cidade."},
+    {"id": "canadian-prepper_en_bugoutconcepts", "origem": "kiwix", "pasta": "videos", "grupo": "prepper", "tema": "Vídeos", "titulo": "Canadian Prepper · Bug Out Concepts", "descricao": "Estratégias e dicas para planos de evacuação."},
+    {"id": "canadian-prepper_en_bugoutroll", "origem": "kiwix", "pasta": "videos", "grupo": "prepper", "tema": "Vídeos", "titulo": "Canadian Prepper · Bug Out Roll", "descricao": "Equipamento essencial para a mochila de evacuação."},
+    {"id": "canadian-prepper_en_preppingfood", "origem": "kiwix", "pasta": "videos", "grupo": "prepper", "tema": "Vídeos", "titulo": "Canadian Prepper · Prepping Food", "descricao": "Armazenamento de comida de longo prazo e refeições de sobrevivência."},
+    {"id": "canadian-prepper_en_winterprepping", "origem": "kiwix", "pasta": "videos", "grupo": "prepper", "tema": "Vídeos", "titulo": "Canadian Prepper · Winter Prepping", "descricao": "Preparação para o inverno e suas emergências."},
+    {"id": "s2underground_en_all", "origem": "kiwix", "pasta": "videos", "grupo": "prepper", "tema": "Vídeos", "titulo": "S2 Underground", "descricao": "Inteligência e comunicações para tempos difíceis."},
+
+    {"id": "theworldfactbook_en_all", "origem": "kiwix", "pasta": "other", "grupo": "prepper", "tema": "Referência", "titulo": "CIA World Factbook (2020)", "descricao": "Almanaque com dados de todos os países. Edição de 2020, a publicação foi descontinuada."}
+  ]
+}

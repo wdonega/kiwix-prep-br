@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Prep Wiki BR · gerenciar acervo</title>
+<link rel="icon" href="/prep/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/prep/base.css">
+<link rel="stylesheet" href="/prep/admin.css">
+</head>
+<body>
+<header class="topo">
+  <div class="topo-in">
+    <a class="marca" href="/" aria-label="Prep Wiki BR, página inicial">
+      <span class="marca-logo"><svg class="i" aria-hidden="true"><use href="/prep/icones.svg#i-backpack"/></svg></span>
+      <span class="marca-nome">Prep Wiki BR</span>
+    </a>
+    <span class="marca-local">Gerenciar acervo</span>
+    <nav class="topo-acoes" aria-label="Opções">
+      <a class="btn" href="/"><svg class="i" aria-hidden="true"><use href="/prep/icones.svg#i-library"/></svg><span>Biblioteca</span></a>
+    </nav>
+  </div>
+</header>
+
+<main class="conteudo">
+  <section class="painel" aria-label="Resumo">
+    <div class="stat">
+      <span class="stat-ico"><svg class="i" aria-hidden="true"><use href="/prep/icones.svg#i-package"/></svg></span>
+      <div><div class="stat-val" id="s-instalados">–</div><div class="stat-rot">acervos instalados</div></div>
+    </div>
+    <div class="stat">
+      <span class="stat-ico"><svg class="i" aria-hidden="true"><use href="/prep/icones.svg#i-hard-drive"/></svg></span>
+      <div class="stat-cresce">
+        <div class="stat-val"><span id="s-ocupado">–</span> <small id="s-livre"></small></div>
+        <div class="disco" aria-hidden="true"><i id="s-disco-outros"></i><i id="s-disco-acervo" class="acervo"></i></div>
+        <div class="stat-rot" id="s-disco-rot">espaço em disco</div>
+      </div>
+    </div>
+    <div class="stat">
+      <span class="stat-ico"><svg class="i" aria-hidden="true"><use href="/prep/icones.svg#i-clock"/></svg></span>
+      <div class="stat-cresce"><div class="stat-val stat-val-p" id="s-verificado">–</div><div class="stat-rot">versões verificadas</div></div>
+      <button class="ibtn" id="b-verificar" type="button" data-dica="Verificar versões agora" aria-label="Verificar versões agora">
+        <svg class="i" aria-hidden="true"><use href="/prep/icones.svg#i-refresh"/></svg>
+      </button>
+    </div>
+  </section>
+
+  <div id="alerta" class="alerta" hidden></div>
+
+  <div class="abas" role="tablist" aria-label="Filtrar acervos" id="abas"></div>
+  <div id="lista" aria-live="polite"></div>
+</main>
+
+<footer class="rodape">
+  <span id="s-catalogo">Catálogo</span><span class="sep">·</span>baixado dos mirrors oficiais do Kiwix e das releases do projeto<span class="sep">·</span>
+  <a href="https://github.com/wdonega/prep-wiki-br" target="_blank" rel="noopener">
+    <svg class="i" aria-hidden="true"><use href="/prep/icones.svg#i-github"/></svg>GitHub</a>
+</footer>
+
+<dialog id="dlg" class="dlg">
+  <form method="dialog">
+    <div class="dlg-ico" id="dlg-ico"></div>
+    <h2 id="dlg-tit"></h2>
+    <p id="dlg-txt"></p>
+    <div class="dlg-acoes">
+      <button class="btn" value="nao" id="dlg-nao">Voltar</button>
+      <button class="btn btn-perigo" value="sim" id="dlg-sim"></button>
+    </div>
+  </form>
+</dialog>
+<div class="avisos" id="avisos" role="status"></div>
+<script src="/prep/admin.js"></script>
+</body>
+</html>

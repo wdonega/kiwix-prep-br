@@ -253,15 +253,25 @@ def gerar_faq(paginas_md):
                   "Tanque de peixes – Perguntas e respostas", corpo)
 
 
-def montar_sumario(atual):
-    out = []
+def indice_portal():
+    """Índice completo, em caixas por seção, para a página inicial (estilo portal da Wikipédia)."""
+    caixas = []
     for secao, cams in SUMARIO:
-        out.append(f"<h4>{html.escape(secao)}</h4><ul>")
-        for c in cams:
-            cls = ' class="atual"' if c == atual else ""
-            out.append(f'<li><a{cls} href="/{c}">{html.escape(TITULO_CURTO[c])}</a></li>')
-        out.append("</ul>")
-    return "".join(out)
+        cams = [c for c in cams if c != "index"]
+        if cams:
+            itens = "".join(f'<li><a href="/{c}">{html.escape(TITULO_CURTO[c])}</a></li>' for c in cams)
+            caixas.append(f'<div class="caixa"><h3>{html.escape(secao)}</h3><ul>{itens}</ul></div>')
+    return f'<section id="indice" class="portal"><h2>Índice completo</h2>{"".join(caixas)}</section>'
+
+
+def nesta_secao(atual):
+    for secao, cams in SUMARIO:
+        if atual in cams and len(cams) > 1:
+            itens = "".join(f'<li><a{" class=\"atual\"" if c == atual else ""} href="/{c}">'
+                            f'{html.escape(TITULO_CURTO[c])}</a></li>' for c in cams)
+            return (f'<nav class="nesta-secao"><h4>Nesta seção: {html.escape(secao)}</h4><ul>{itens}</ul>'
+                    f'<a class="todo-indice" href="/index#indice">Ver índice completo</a></nav>')
+    return '<nav class="nesta-secao"><a class="todo-indice" href="/index#indice">Ver índice completo</a></nav>'
 
 
 ORDEM = [c for _, cs in SUMARIO for c in cs]
@@ -275,8 +285,16 @@ def envolver(p: Pagina):
         prox = (f'<a href="/{ORDEM[i+1]}">{html.escape(TITULO_CURTO[ORDEM[i+1]])} →</a>'
                 if i + 1 < len(ORDEM) else "<span></span>")
         pag = f'<nav class="paginacao">{ant}{prox}</nav>'
-    migalha = "" if p.caminho == "index" else (
-        f'<div class="migalha"><a href="/index">Início</a> › {html.escape(p.secao)}</div>')
+    if p.caminho == "index":
+        corpo = (p.corpo.replace("<!-- INDICE -->", indice_portal()) if "<!-- INDICE -->" in p.corpo
+                 else p.corpo + indice_portal())
+        migalha = ""
+    else:
+        corpo = p.corpo + nesta_secao(p.caminho)
+        primeira = next((cs[0] for _, cs in SUMARIO if p.caminho in cs), None)
+        secao = (f'<a href="/{primeira}">{html.escape(p.secao)}</a>' if primeira and primeira != p.caminho
+                 else html.escape(p.secao))
+        migalha = f'<div class="migalha"><a href="/index">Início</a> › {secao}</div>'
     doc = f"""<!DOCTYPE html>
 <html lang="pt-BR"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -284,9 +302,8 @@ def envolver(p: Pagina):
 <link rel="stylesheet" href="/assets/estilo.css">
 </head><body>
 <header class="topo"><a class="marca" href="/index">Sisteminha Embrapa <span>· biblioteca offline</span></a>
-<nav><a href="/faq">Perguntas</a><a href="/glossario">Glossário</a><a href="/busca">Buscar</a></nav></header>
-<div class="layout"><main>{migalha}{p.corpo}{pag}</main>
-<aside class="sumario">{montar_sumario(p.caminho)}</aside></div>
+<nav><a href="/index#indice">Índice</a><a href="/faq">Perguntas</a><a href="/glossario">Glossário</a><a href="/busca">Buscar</a></nav></header>
+<main>{migalha}{corpo}{pag}</main>
 <footer>Conteúdo baseado em publicações da Embrapa e parceiros – veja <a href="/fontes">Fontes</a>.
 Coleção para uso pessoal e educativo.</footer>
 </body></html>"""

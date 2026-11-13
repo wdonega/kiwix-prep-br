@@ -439,6 +439,17 @@ def texto_puro(h):
     return re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", t))).strip()
 
 
+def indice_portal(sumario):
+    """Índice completo, em caixas por seção, para a página inicial (estilo portal da Wikipédia)."""
+    caixas = []
+    for secao, cams in sumario["secoes"]:
+        cams = [(c, t) for c, t in cams if c != "index"]
+        if cams:
+            itens = "".join(f'<li><a href="/{c}">{E(t)}</a></li>' for c, t in cams)
+            caixas.append(f'<div class="caixa"><h3>{E(secao)}</h3><ul>{itens}</ul></div>')
+    return f'<section id="indice" class="portal"><h2>Índice completo</h2>{"".join(caixas)}</section>'
+
+
 def envolver(p, sumario, ordem):
     i = ordem.index(p.caminho) if p.caminho in ordem else -1
     pag = ""
@@ -447,13 +458,25 @@ def envolver(p, sumario, ordem):
         ant = (f'<a href="/{ordem[i-1]}">← {E(cur[ordem[i-1]].curto)}</a>' if i > 0 else "<span></span>")
         prox = (f'<a href="/{ordem[i+1]}">{E(cur[ordem[i+1]].curto)} →</a>' if i + 1 < len(ordem) else "<span></span>")
         pag = f'<nav class="paginacao">{ant}{prox}</nav>'
-    nav = []
-    for secao, cams in sumario["secoes"]:
-        nav.append(f"<h4>{E(secao)}</h4><ul>")
-        for c, t in cams:
-            nav.append(f'<li><a{" class=\"atual\"" if c == p.caminho else ""} href="/{c}">{E(t)}</a></li>')
-        nav.append("</ul>")
-    migalha = "" if p.caminho == "index" else f'<div class="migalha"><a href="/index">Início</a> › {E(p.secao)}</div>'
+    secao_atual = next(((s, cs) for s, cs in sumario["secoes"] if any(c == p.caminho for c, _ in cs)), None)
+    corpo = p.corpo
+    if p.caminho == "index":
+        corpo = corpo.replace("<!-- INDICE -->", indice_portal(sumario)) if "<!-- INDICE -->" in corpo \
+            else corpo + indice_portal(sumario)
+    elif secao_atual and len(secao_atual[1]) > 1:
+        itens = "".join(f'<li><a{" class=\"atual\"" if c == p.caminho else ""} href="/{c}">{E(t)}</a></li>'
+                        for c, t in secao_atual[1])
+        corpo += (f'<nav class="nesta-secao"><h4>Nesta seção: {E(secao_atual[0])}</h4><ul>{itens}</ul>'
+                  f'<a class="todo-indice" href="/index#indice">Ver índice completo</a></nav>')
+    if p.caminho == "index":
+        migalha = ""
+    elif secao_atual and secao_atual[1][0][0] != p.caminho:
+        migalha = (f'<div class="migalha"><a href="/index">Início</a> › '
+                   f'<a href="/{secao_atual[1][0][0]}">{E(secao_atual[0])}</a></div>')
+    elif p.caminho.startswith("plantas/"):
+        migalha = '<div class="migalha"><a href="/index">Início</a> › <a href="/plantas/index">Plantas A–Z</a></div>'
+    else:
+        migalha = f'<div class="migalha"><a href="/index">Início</a> › {E(p.secao)}</div>'
     doc = f"""<!DOCTYPE html>
 <html lang="pt-BR"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -461,9 +484,8 @@ def envolver(p, sumario, ordem):
 <link rel="stylesheet" href="/assets/estilo.css">
 </head><body>
 <header class="topo"><a class="marca" href="/index">Plantas Medicinais <span>· biblioteca offline</span></a>
-<nav><a href="/plantas/index">Plantas A–Z</a><a href="/plantas/indicacoes">Por indicação</a><a href="/busca">Buscar</a></nav></header>
-<div class="layout"><main>{migalha}{p.corpo}{pag}</main>
-<aside class="sumario">{"".join(nav)}</aside></div>
+<nav><a href="/index#indice">Índice</a><a href="/plantas/index">Plantas A–Z</a><a href="/plantas/indicacoes">Por indicação</a><a href="/busca">Buscar</a></nav></header>
+<main>{migalha}{corpo}{pag}</main>
 <footer>Conteúdo baseado em publicações da Anvisa, do Ministério da Saúde e da Embrapa – veja <a href="/fontes">Fontes</a>.
 Uso pessoal e educativo. Não substitui orientação profissional.</footer>
 </body></html>"""

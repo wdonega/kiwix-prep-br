@@ -61,6 +61,4 @@ Uso pessoal e educativo; os direitos das publicações pertencem aos seus autore
 | Diluição do resíduo | 1 parte para 4 de água do tanque |
 | Área | 100 a 1.500 m² |
 
-## Mais
-
-[Histórico e resultados](/historico) · [Sisteminha Comunidades](/comunidades) · [Glossário](/glossario) · [Documentos originais e fontes](/fontes)
+<!-- INDICE -->

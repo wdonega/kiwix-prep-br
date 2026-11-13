@@ -6,6 +6,10 @@ Quando a rede cai, numa enchente, num apagão, no sítio ou numa viagem, o que v
 
 > Projeto independente, sem relação oficial com o Kiwix ou com a Wikimedia. Os ZIMs são feitos para abrir no Kiwix.
 
+### 👀 Ver online antes de baixar
+
+Os acervos estão no ar em **[prep.bigode.org](https://prep.bigode.org/)**, servidos pelo próprio Kiwix: dá para navegar e buscar do navegador, do jeito que fica depois de baixado.
+
 ---
 
 ## 📦 Acervos deste repositório

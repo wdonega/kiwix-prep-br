@@ -20,6 +20,13 @@ RUN CGO_ENABLED=0 GOTOOLCHAIN=local go vet ./... && \
     go build -trimpath -ldflags="-s -w -X main.versao=$VERSAO" -o /prep-manager .
 
 FROM ghcr.io/kiwix/kiwix-serve:3.8.2@sha256:e478554a9920412eeb5ce1d73f24e4b28445ebed233187cdd03c623c32be46a5
+ARG VERSAO=dev
+ARG REVISAO=
+LABEL org.opencontainers.image.title="Prep Wiki BR" \
+      org.opencontainers.image.description="Biblioteca offline de preparação, autonomia e saúde em português" \
+      org.opencontainers.image.source="https://github.com/wdonega/prep-wiki-br" \
+      org.opencontainers.image.version="$VERSAO" \
+      org.opencontainers.image.revision="$REVISAO"
 COPY --from=build /prep-manager /usr/local/bin/prep-manager
 ENV PREP_DADOS=/data \
     PREP_ENDERECO=0.0.0.0:8080 \

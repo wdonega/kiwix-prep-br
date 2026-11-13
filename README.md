@@ -96,6 +96,7 @@ O que vale saber:
 - **Atualizações dos acervos:** quando sai uma edição nova de um acervo instalado, o gerenciador mostra **Atualizar**.
 - **Sem senha:** qualquer pessoa na mesma rede consegue baixar e apagar acervos. Não exponha a porta na internet do jeito que está.
 - **Versões da imagem:** `:latest` é sempre a mais recente. Cada versão também tem uma tag fixa no formato `AAAA-MM-DD-rN` (por exemplo `:2026-11-13-r2`), listada nas [releases](https://github.com/wdonega/prep-wiki-br/releases?q=imagem&expanded=true). Para ficar numa versão específica, troque `latest` por ela. A versão em uso aparece no rodapé do gerenciador.
+- **Instalar numa máquina sem internet:** cada [release da imagem](https://github.com/wdonega/prep-wiki-br/releases?q=imagem&expanded=true) traz a imagem em arquivo (`.tar.gz`, ~30 MB), um para PC (`amd64`) e um para ARM (`arm64`). Leve o arquivo para a máquina, rode `docker load -i <arquivo>` e depois o `docker run` de cima.
 - **Atualizar o Prep Wiki BR:** `docker pull ghcr.io/wdonega/prep-wiki-br:latest`, depois `docker rm -f prep-wiki-br` e o mesmo `docker run` de cima. Os acervos baixados continuam na pasta.
 
 <details>

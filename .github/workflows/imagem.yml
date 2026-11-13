@@ -4,8 +4,9 @@ name: imagem
 # ghcr.io/wdonega/prep-wiki-br. Roda quando algo em manager/ muda.
 #
 # Cada build ganha uma versão no mesmo formato das wikis, AAAA-MM-DD-rN:
-#   - a imagem sai com as tags :AAAA-MM-DD-rN e :latest
-#   - uma release "imagem-AAAA-MM-DD-rN" registra o que foi publicado
+#   - a imagem sai no registro com as tags :AAAA-MM-DD-rN e :latest
+#   - uma release "imagem-AAAA-MM-DD-rN" traz a mesma imagem em arquivo (.tar.gz, uma por arquitetura),
+#     para carregar com "docker load" numa máquina sem acesso ao registro
 on:
   push:
     branches: [main]
@@ -51,17 +52,30 @@ jobs:
           provenance: false
           build-args: |
             VERSAO=${{ steps.v.outputs.versao }}
+            REVISAO=${{ github.sha }}
           tags: |
             ${{ env.IMAGEM }}:${{ steps.v.outputs.versao }}
             ${{ env.IMAGEM }}:latest
-          labels: |
-            org.opencontainers.image.source=https://github.com/${{ github.repository }}
-            org.opencontainers.image.title=Prep Wiki BR
-            org.opencontainers.image.description=Biblioteca offline de preparação, autonomia e saúde em português
-            org.opencontainers.image.version=${{ steps.v.outputs.versao }}
-            org.opencontainers.image.revision=${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      # A mesma imagem, agora em arquivo: uma por arquitetura. O build aproveita o que acabou de ser
+      # feito no passo anterior, então só empacota.
+      - name: Exportar a imagem em arquivo
+        env:
+          VERSAO: ${{ steps.v.outputs.versao }}
+        run: |
+          mkdir saida
+          for ARQ in amd64 arm64; do
+            ARQUIVO="saida/prep-wiki-br_${VERSAO}_${ARQ}.tar"
+            docker buildx build manager --platform "linux/$ARQ" --provenance=false \
+              --build-arg "VERSAO=$VERSAO" --build-arg "REVISAO=$GITHUB_SHA" \
+              -t "$IMAGEM:$VERSAO" -t "$IMAGEM:latest" \
+              --output "type=docker,dest=$ARQUIVO"
+            gzip -9 "$ARQUIVO"
+            (cd saida && sha256sum "$(basename "$ARQUIVO").gz" > "$(basename "$ARQUIVO").gz.sha256")
+          done
+          ls -la saida
 
       - name: Publicar release
         env:
@@ -71,7 +85,9 @@ jobs:
         run: |
           F='```'
           {
-            echo "Imagem Docker do **Prep Wiki BR**, para PC (\`amd64\`) e ARM de 64 bits (\`arm64\`)."
+            echo "Imagem Docker do **Prep Wiki BR**, para PC (\`amd64\`) e ARM de 64 bits (\`arm64\`, Raspberry Pi 4 e 5)."
+            echo
+            echo "### Instalar pelo registro"
             echo
             echo "${F}bash"
             echo "docker run -d --name prep-wiki-br --restart unless-stopped \\"
@@ -80,9 +96,19 @@ jobs:
             echo
             echo "A mesma imagem está em \`$IMAGEM:latest\`, que aponta sempre para a versão mais recente."
             echo
-            echo "Digest: \`$DIGEST\`"
+            echo "### Instalar a partir do arquivo, sem acesso ao registro"
+            echo
+            echo "Baixe abaixo o arquivo da sua arquitetura (\`amd64\` para PC, \`arm64\` para Raspberry Pi), leve para a máquina e carregue:"
+            echo
+            echo "${F}bash"
+            echo "docker load -i prep-wiki-br_${VERSAO}_amd64.tar.gz"
+            echo "$F"
+            echo
+            echo "Depois é o mesmo \`docker run\` de cima."
+            echo
+            echo "Digest no registro: \`$DIGEST\`"
             echo
             echo "Gerada a partir do commit ${GITHUB_SHA::7}: $(git log -1 --pretty=%s)"
           } > notas.md
-          gh release create "imagem-$VERSAO" --title "imagem Docker – $VERSAO" \
+          gh release create "imagem-$VERSAO" saida/* --title "imagem Docker – $VERSAO" \
             --notes-file notas.md --target "$GITHUB_SHA"

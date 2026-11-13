@@ -3,8 +3,9 @@
 /* ---------- busca na barra do topo ---------- */
 /* três colunas: marca | busca (centralizada na barra) | botões. O leitor das wikis usa a mesma grade,
    então a busca fica no mesmo lugar nas duas telas, com qualquer coisa à esquerda ou à direita. */
-.topo-in { display: grid; grid-template-columns: minmax(160px, 1fr) minmax(0, 540px) minmax(160px, 1fr); }
-.marca { justify-self: start; }
+/* em janela estreita quem encolhe é a busca; a marca, o rótulo e os botões ficam inteiros */
+.topo-in { display: grid; grid-template-columns: minmax(max-content, 1fr) minmax(140px, 460px) minmax(max-content, 1fr); }
+.topo-esq { justify-self: start; }
 .topo-acoes { margin-left: 0; justify-self: end; }
 .busca { position: relative; min-width: 0; width: 100%; }
 .busca input { width: 100%; height: 40px; border-radius: 12px; border: 1px solid var(--border); background: var(--surface);

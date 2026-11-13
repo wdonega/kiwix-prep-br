@@ -28,6 +28,7 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+	"sync/atomic"
 	"syscall"
 	"time"
 )
@@ -52,8 +53,10 @@ type Config struct {
 
 type App struct {
 	cfg      Config
-	cat      *Catalogo
+	base     *Catalogo                // o catálogo embutido, fixo
+	catAtual atomic.Pointer[Catalogo] // base + os acervos da pessoa; trocado inteiro quando eles mudam
 	http     *http.Client
+	httpFora *http.Client // para endereços informados pela pessoa: não alcança a própria máquina
 	urlKiwix *url.URL
 	ctx      context.Context
 
@@ -68,6 +71,12 @@ type App struct {
 	fila         chan string
 	kiwixParou   chan struct{}
 }
+
+// cat devolve o catálogo em uso agora.
+func (a *App) cat() *Catalogo { return a.catAtual.Load() }
+
+// remontarCatalogo refaz o catálogo depois de uma mudança nos acervos da pessoa. Chame com a.mu travado.
+func (a *App) remontarCatalogo() { a.catAtual.Store(comPersonalizados(a.base, a.est.Personalizados)) }
 
 func env(chave, padrao string) string {
 	if v := os.Getenv(chave); v != "" {
@@ -144,7 +153,8 @@ func main() {
 	defer parar()
 
 	a := &App{
-		cfg: cfg, cat: cat, ctx: ctx,
+		cfg: cfg, base: cat, ctx: ctx,
+		httpFora: clienteDeFora(),
 		http:     &http.Client{Transport: &http.Transport{Proxy: http.ProxyFromEnvironment, ResponseHeaderTimeout: 60 * time.Second, IdleConnTimeout: 90 * time.Second}},
 		urlKiwix: &url.URL{Scheme: "http", Host: "127.0.0.1:" + strconv.Itoa(cfg.KiwixPorta)},
 		tarefas:  map[string]*Tarefa{}, erros: map[string]string{}, errosVerificacao: map[string]string{},
@@ -153,7 +163,9 @@ func main() {
 	if a.est, err = carregarEstado(a.caminhoEstado()); err != nil {
 		log.Fatalf("estado.json: %v", err)
 	}
-	if err := a.est.sincronizarComDisco(cfg.Dados, cat); err != nil {
+	a.remontarCatalogo()
+	a.adotarArquivosSoltos()
+	if err := a.est.sincronizarComDisco(cfg.Dados, a.cat()); err != nil {
 		log.Fatal(err)
 	}
 	if err := a.est.salvar(a.caminhoEstado()); err != nil {
@@ -177,7 +189,8 @@ func main() {
 		defer cancel()
 		srv.Shutdown(c)
 	}()
-	logf("dados em %s · catálogo v%d com %d ZIMs · %d instalados", cfg.Dados, cat.Versao, len(cat.Itens), len(a.est.Instalados))
+	logf("dados em %s · catálogo v%d com %d ZIMs · %d da pessoa · %d instalados", cfg.Dados, cat.Versao, len(cat.Itens),
+		len(a.est.Personalizados), len(a.est.Instalados))
 	logf("Prep Wiki BR %s · gerenciador em http://%s/admin/", versao, cfg.Endereco)
 	if err := srv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 		log.Fatal(err)
@@ -189,7 +202,7 @@ func main() {
 func (a *App) limparParciaisOrfaos() {
 	validos := map[string]bool{}
 	for id, d := range a.est.Disponiveis {
-		if it := a.cat.porID[id]; it != nil {
+		if it := a.cat().porID[id]; it != nil {
 			validos[it.nomeArquivo(d.Edicao)+".part"] = true
 		}
 	}
@@ -236,6 +249,9 @@ func (a *App) rotas() http.Handler {
 	mux.HandleFunc("POST /api/baixar/{id}", a.acao(a.enfileirar))
 	mux.HandleFunc("POST /api/cancelar/{id}", a.acao(a.cancelar))
 	mux.HandleFunc("POST /api/apagar/{id}", a.acao(a.apagar))
+	mux.HandleFunc("POST /api/meus/inspecionar", a.apiInspecionarLink)
+	mux.HandleFunc("POST /api/meus/link", a.apiAdicionarLink)
+	mux.HandleFunc("PUT /api/meus/arquivo", a.apiEnviarArquivo)
 
 	// todo o resto é do kiwix-serve
 	mux.Handle("/", a.proxyKiwix())
@@ -290,8 +306,8 @@ type visaoItem struct {
 
 func (a *App) apiEstado(w http.ResponseWriter, r *http.Request) {
 	a.mu.Lock()
-	itens := make([]visaoItem, 0, len(a.cat.Itens))
-	for _, it := range a.cat.Itens {
+	itens := make([]visaoItem, 0, len(a.cat().Itens))
+	for _, it := range a.cat().Itens {
 		v := visaoItem{ItemCatalogo: it, Instalado: a.est.Instalados[it.ID], Disponivel: a.est.Disponiveis[it.ID],
 			Erro: a.erros[it.ID], ErroVerificacao: a.errosVerificacao[it.ID]}
 		if t := a.tarefas[it.ID]; t != nil {
@@ -316,8 +332,8 @@ func (a *App) apiEstado(w http.ResponseWriter, r *http.Request) {
 	}
 	resp := map[string]any{
 		"versao":          versao,
-		"catalogo_versao": a.cat.Versao,
-		"grupos":          a.cat.Grupos,
+		"catalogo_versao": a.cat().Versao,
+		"grupos":          a.cat().Grupos,
 		"verificado_em":   a.est.VerificadoEm,
 		"verificando":     a.verificando,
 		"itens":           itens,
@@ -333,7 +349,7 @@ func (a *App) apiEstado(w http.ResponseWriter, r *http.Request) {
 
 // desatualizado compara o instalado com a edição mais recente conhecida.
 func desatualizado(it *ItemCatalogo, inst *Instalado, disp *Disponivel) bool {
-	if disp == nil {
+	if disp == nil || it.personalizado() { // acervo da pessoa não tem edição a acompanhar
 		return false
 	}
 	if inst.SHA256 != "" && disp.SHA256 != "" {

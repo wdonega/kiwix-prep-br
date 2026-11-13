@@ -106,6 +106,12 @@ func (a *App) resolverKiwix(ctx context.Context, it *ItemCatalogo, ls *listagens
 	nome := it.ID + "_" + edicao + ".zim"
 	direto := kiwixDownload + it.Pasta + "/" + nome
 
+	return a.lerMetalink(ctx, direto, nome, edicao)
+}
+
+// lerMetalink lê o .meta4 que o download.kiwix.org publica ao lado de cada arquivo:
+// tamanho, sha-256 e a lista de mirrors em ordem de prioridade.
+func (a *App) lerMetalink(ctx context.Context, direto, nome, edicao string) (*Disponivel, error) {
 	b, err := a.buscar(ctx, direto+".meta4", 8<<20, nil)
 	if err != nil {
 		return nil, fmt.Errorf("metalink: %w", err)
@@ -200,7 +206,10 @@ func (a *App) verificar(ctx context.Context) {
 		wg    sync.WaitGroup
 		vagas = make(chan struct{}, 8)
 	)
-	for _, it := range a.cat.Itens {
+	for _, it := range a.cat().Itens {
+		if it.personalizado() { // acervo da pessoa: não tem edição nova a procurar
+			continue
+		}
 		wg.Add(1)
 		go func(it *ItemCatalogo) {
 			defer wg.Done()

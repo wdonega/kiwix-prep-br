@@ -12,11 +12,13 @@
 <body>
 <header class="topo">
   <div class="topo-in">
-    <a class="marca" href="/" aria-label="Prep Wiki BR, página inicial">
-      <span class="marca-logo"><svg class="i" aria-hidden="true"><use href="/prep/icones.svg#i-backpack"/></svg></span>
-      <span class="marca-nome">Prep Wiki BR</span>
-    </a>
-    <span class="marca-local">Gerenciar acervo</span>
+    <div class="topo-esq">
+      <a class="marca" href="/" aria-label="Prep Wiki BR, página inicial">
+        <span class="marca-logo"><svg class="i" aria-hidden="true"><use href="/prep/icones.svg#i-backpack"/></svg></span>
+        <span class="marca-nome">Prep Wiki BR</span>
+      </a>
+      <span class="marca-local">Gerenciar acervo</span>
+    </div>
     <nav class="topo-acoes" aria-label="Opções">
       <a class="btn" href="/"><svg class="i" aria-hidden="true"><use href="/prep/icones.svg#i-library"/></svg><span>Biblioteca</span></a>
     </nav>
@@ -50,6 +52,26 @@
 
   <div class="abas" role="tablist" aria-label="Filtrar acervos" id="abas"></div>
   <div id="lista" aria-live="polite"></div>
+
+  <section class="grupo" id="adicionar" aria-labelledby="adicionar-tit">
+    <div class="grupo-cab"><h2 id="adicionar-tit">Adicionar um acervo seu</h2><span class="etq">link ou arquivo .zim</span></div>
+    <div class="painel-lista add">
+      <form class="add-link" id="f-link" autocomplete="off">
+        <svg class="i" aria-hidden="true"><use href="/prep/icones.svg#i-link"/></svg>
+        <input id="link" type="url" inputmode="url" placeholder="Cole o link de um arquivo .zim" aria-label="Link de um arquivo .zim" required>
+        <button class="btn" id="b-inspecionar" type="submit">Verificar</button>
+      </form>
+      <div id="previa" hidden></div>
+      <label class="soltar" id="soltar">
+        <input id="arquivo" type="file" accept=".zim" hidden>
+        <svg class="i" aria-hidden="true"><use href="/prep/icones.svg#i-upload"/></svg>
+        <span><b>Ou envie um arquivo .zim</b> deste aparelho: clique aqui ou arraste o arquivo</span>
+      </label>
+      <div id="envio" hidden></div>
+    </div>
+    <p class="add-nota">O link é conferido antes de baixar: o gerenciador lê só o começo do arquivo para confirmar que é um ZIM e saber o tamanho.
+      Um .zim copiado direto para a pasta de dados também aparece aqui depois de reiniciar.</p>
+  </section>
 </main>
 
 <footer class="rodape">

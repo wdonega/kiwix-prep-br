@@ -31,15 +31,28 @@ type Disponivel struct {
 	VerificadoEm time.Time `json:"verificado_em"`
 }
 
+// Personalizado: um acervo que não é do catálogo, acrescentado pela pessoa por link ou por arquivo.
+type Personalizado struct {
+	ID           string    `json:"id"`
+	Origem       string    `json:"origem"` // "link" ou "arquivo"
+	URL          string    `json:"url,omitempty"`
+	Arquivo      string    `json:"arquivo"`
+	Titulo       string    `json:"titulo"`
+	Descricao    string    `json:"descricao,omitempty"`
+	AdicionadoEm time.Time `json:"adicionado_em"`
+}
+
 type Estado struct {
-	Versao       int                    `json:"versao"`
-	Instalados   map[string]*Instalado  `json:"instalados"`
-	Disponiveis  map[string]*Disponivel `json:"disponiveis"`
-	VerificadoEm time.Time              `json:"verificado_em,omitempty"`
+	Versao         int                       `json:"versao"`
+	Instalados     map[string]*Instalado     `json:"instalados"`
+	Disponiveis    map[string]*Disponivel    `json:"disponiveis"`
+	Personalizados map[string]*Personalizado `json:"personalizados,omitempty"`
+	VerificadoEm   time.Time                 `json:"verificado_em,omitempty"`
 }
 
 func novoEstado() *Estado {
-	return &Estado{Versao: 1, Instalados: map[string]*Instalado{}, Disponiveis: map[string]*Disponivel{}}
+	return &Estado{Versao: 1, Instalados: map[string]*Instalado{}, Disponiveis: map[string]*Disponivel{},
+		Personalizados: map[string]*Personalizado{}}
 }
 
 func carregarEstado(caminho string) (*Estado, error) {
@@ -59,6 +72,9 @@ func carregarEstado(caminho string) (*Estado, error) {
 	}
 	if e.Disponiveis == nil {
 		e.Disponiveis = map[string]*Disponivel{}
+	}
+	if e.Personalizados == nil {
+		e.Personalizados = map[string]*Personalizado{}
 	}
 	return e, nil
 }

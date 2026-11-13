@@ -17,10 +17,10 @@
 /* ---------- barra do leitor (/viewer) ----------
    Os elementos e os comportamentos são os do Kiwix (busca com sugestões, artigo aleatório);
    aqui só muda a aparência e a ordem, para a barra ficar igual à da página inicial e à do gerenciador:
-   marca à esquerda, busca no centro (na mesma posição da página inicial), botões com contorno à direita.
+   marca à esquerda com o acervo aberto ao lado, busca no centro (na mesma posição da página inicial), botão com contorno à direita.
    O seletor de idioma da interface do Kiwix fica escondido: a interface é em português, como o conteúdo. */
 body:has(#kiwixtoolbar) { background: var(--k-bg); }
-#kiwixtoolbar { display: grid !important; grid-template-columns: minmax(160px, 1fr) minmax(0, 540px) minmax(160px, 1fr);
+#kiwixtoolbar { display: grid !important; grid-template-columns: minmax(max-content, 1fr) minmax(140px, 460px) minmax(max-content, 1fr);
   align-items: center; column-gap: 16px; height: 63px; box-sizing: border-box;
   padding: 0 max(20px, calc((100% - 1140px) / 2)) !important; border-bottom: 1px solid var(--k-border) !important; color: var(--k-text);
   /* mesmo fundo da barra da página inicial: a cor do topo por cima do brilho esverdeado */
@@ -45,18 +45,20 @@ label[for="kiwix_button_show_toggle"] { display: none !important; }
 #kiwix_serve_taskbar_library_button button::before { content: ""; position: absolute; inset: 0; margin: auto; width: 19px; height: 19px;
   background: #fff; -webkit-mask: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='black'%20stroke-width='2'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cpath%20d='M4%2010a4%204%200%200%201%204-4h8a4%204%200%200%201%204%204v10a2%202%200%200%201-2%202H6a2%202%200%200%201-2-2z'/%3E%3Cpath%20d='M8%2010h8'/%3E%3Cpath%20d='M8%2018h8'/%3E%3Cpath%20d='M8%2022v-6a2%202%200%200%201%202-2h4a2%202%200%200%201%202%202v6'/%3E%3Cpath%20d='M9%206V4a2%202%200%200%201%202-2h2a2%202%200%200%201%202%202v2'/%3E%3C/svg%3E") center / contain no-repeat; mask: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='black'%20stroke-width='2'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cpath%20d='M4%2010a4%204%200%200%201%204-4h8a4%204%200%200%201%204%204v10a2%202%200%200%201-2%202H6a2%202%200%200%201-2-2z'/%3E%3Cpath%20d='M8%2010h8'/%3E%3Cpath%20d='M8%2018h8'/%3E%3Cpath%20d='M8%2022v-6a2%202%200%200%201%202-2h4a2%202%200%200%201%202%202v6'/%3E%3Cpath%20d='M9%206V4a2%202%200%200%201%202-2h2a2%202%200%200%201%202%202v2'/%3E%3C/svg%3E") center / contain no-repeat; }
 
-/* acervo aberto: botão com contorno à direita (ícone de livro + título), leva à página inicial do acervo.
-   Fica antes do botão de artigo aleatório, que tem largura fixa: daí a margem. */
-#kiwix_serve_taskbar_home_button { order: 1; flex: 0 1 auto; min-width: 0; grid-column: 3; justify-self: end;
-  margin-right: 44px; max-width: calc(100% - 44px); }
+/* acervo aberto: ao lado da marca, depois de um traço, como o "Biblioteca" da página inicial e o
+   "Gerenciar acervo" do gerenciador. É o botão do Kiwix que leva à página inicial do acervo. */
+#kiwix_serve_taskbar_home_button { order: 1; flex: 0 1 auto; min-width: 0; display: flex; align-items: center; gap: 3px; overflow: hidden;
+  grid-column: 1; justify-self: start; box-sizing: border-box;
+  margin-left: 176.2px; /* largura da marca (logo + "Prep Wiki BR" = 160,2px) + 16px */
+  /* título comprido é cortado com reticências: com este limite o lado esquerdo cabe ao lado da busca centralizada */
+  max-width: 148px; }
 #kiwix_serve_taskbar_home_button:empty { display: none; }
-.kiwix #kiwixtoolbar #kiwix_serve_taskbar_home_button button { display: block; position: relative; box-sizing: border-box; height: 36px !important;
-  max-width: 100%; padding: 0 14px 0 37px !important; border: 1px solid var(--k-border-2) !important; border-radius: 10px !important;
-  background: var(--k-surface) !important; color: var(--k-text) !important; font-size: 14px !important; font-weight: 600 !important;
-  line-height: 34px !important; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; transition: background .15s; }
-.kiwix #kiwixtoolbar #kiwix_serve_taskbar_home_button button:hover { background: var(--k-surface-2) !important; }
-#kiwix_serve_taskbar_home_button button::before { content: ""; position: absolute; left: 14px; top: 0; bottom: 0; margin: auto 0; width: 16px; height: 16px;
-  background: currentColor; -webkit-mask: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='black'%20stroke-width='2'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cpath%20d='M12%207v14'/%3E%3Cpath%20d='M3%2018a1%201%200%200%201-1-1V4a1%201%200%200%201%201-1h5a4%204%200%200%201%204%204%204%204%200%200%201%204-4h5a1%201%200%200%201%201%201v13a1%201%200%200%201-1%201h-6a3%203%200%200%200-3%203%203%203%200%200%200-3-3z'/%3E%3C/svg%3E") center / contain no-repeat; mask: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='black'%20stroke-width='2'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cpath%20d='M12%207v14'/%3E%3Cpath%20d='M3%2018a1%201%200%200%201-1-1V4a1%201%200%200%201%201-1h5a4%204%200%200%201%204%204%204%204%200%200%201%204-4h5a1%201%200%200%201%201%201v13a1%201%200%200%201-1%201h-6a3%203%200%200%200-3%203%203%203%200%200%200-3-3z'/%3E%3C/svg%3E") center / contain no-repeat; }
+#kiwix_serve_taskbar_home_button::before { content: ""; flex: none; width: 1px; height: 18px; background: var(--k-border-2); }
+.kiwix #kiwixtoolbar #kiwix_serve_taskbar_home_button button { display: block; box-sizing: border-box; height: 34px !important; min-width: 0; max-width: 100%;
+  padding: 0 6px !important; border: 1px solid transparent !important; border-radius: 9px !important; background: transparent !important;
+  color: var(--k-muted) !important; font-size: 14px !important; font-weight: 500 !important; line-height: 32px !important;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; transition: background .15s, color .15s; }
+.kiwix #kiwixtoolbar #kiwix_serve_taskbar_home_button button:hover { background: var(--k-surface-2) !important; color: var(--k-text) !important; }
 
 /* busca no centro */
 .kiwix #kiwixtoolbar .kiwix_searchform { order: 2; float: none; flex: 1 1 auto; grid-column: 2; width: 100%; min-width: 0; margin: 0; }
@@ -73,15 +75,20 @@ label[for="kiwix_button_show_toggle"] { display: none !important; }
 label[for="kiwixsearchbox"] { font-size: 0 !important; left: 13px !important; width: 17px; height: 40px !important; pointer-events: none;
   background: var(--k-muted); -webkit-mask: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='black'%20stroke-width='2'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cpath%20d='M21%2021l-4.3-4.3'/%3E%3Cpath%20d='M19%2011a8%208%200%201%201-16%200%208%208%200%200%201%2016%200z'/%3E%3C/svg%3E") center / 17px no-repeat; mask: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='black'%20stroke-width='2'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cpath%20d='M21%2021l-4.3-4.3'/%3E%3Cpath%20d='M19%2011a8%208%200%201%201-16%200%208%208%200%200%201%2016%200z'/%3E%3C/svg%3E") center / 17px no-repeat; }
 
-/* artigo aleatório: botão quadrado com contorno, no canto direito (o seletor de idioma da interface, último item da barra, some) */
+/* artigo aleatório: botão com contorno, ícone e texto, no canto direito, como o "Gerenciar" da página inicial
+   (o seletor de idioma da interface, último item da barra, some) */
 #kiwix_serve_taskbar_random_button { order: 3; flex: none; grid-column: 3; justify-self: end; }
 #kiwixtoolbar > a { display: none !important; }
-.kiwix #kiwixtoolbar #kiwix_serve_taskbar_random_button button { display: block; position: relative; box-sizing: border-box; width: 36px;
-  height: 36px !important; padding: 0 !important; border: 1px solid var(--k-border-2) !important; border-radius: 10px !important;
-  background: var(--k-surface) !important; color: var(--k-text) !important; font-size: 0 !important; transition: background .15s; }
+.kiwix #kiwixtoolbar #kiwix_serve_taskbar_random_button button {
+  display: inline-flex !important; align-items: center; justify-content: center; gap: 0; height: 36px !important; box-sizing: border-box;
+  padding: 0 14px !important; border: 1px solid var(--k-border-2) !important; border-radius: 10px !important;
+  background: var(--k-surface) !important; color: var(--k-text) !important; font-size: 0 !important; line-height: 1 !important;
+  transition: background .15s; }
 .kiwix #kiwixtoolbar #kiwix_serve_taskbar_random_button button:hover { background: var(--k-surface-2) !important; }
-#kiwix_serve_taskbar_random_button button::before { content: ""; position: absolute; inset: 0; margin: auto; width: 16px; height: 16px;
+/* o botão tem um nó de texto (o emoji original, com fonte 0) entre o ícone e o rótulo; por isso margem em vez de "gap" */
+#kiwix_serve_taskbar_random_button button::before { content: ""; flex: none; width: 16px; height: 16px; margin-right: 7px;
   background: currentColor; -webkit-mask: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='black'%20stroke-width='2'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cpath%20d='m18%2014%204%204-4%204'/%3E%3Cpath%20d='m18%202%204%204-4%204'/%3E%3Cpath%20d='M2%2018h1.973a4%204%200%200%200%203.3-1.7l5.454-8.6a4%204%200%200%201%203.3-1.7H22'/%3E%3Cpath%20d='M2%206h1.972a4%204%200%200%201%203.6%202.2'/%3E%3Cpath%20d='M22%2018h-6.041a4%204%200%200%201-3.3-1.8l-.359-.45'/%3E%3C/svg%3E") center / contain no-repeat; mask: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='black'%20stroke-width='2'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cpath%20d='m18%2014%204%204-4%204'/%3E%3Cpath%20d='m18%202%204%204-4%204'/%3E%3Cpath%20d='M2%2018h1.973a4%204%200%200%200%203.3-1.7l5.454-8.6a4%204%200%200%201%203.3-1.7H22'/%3E%3Cpath%20d='M2%206h1.972a4%204%200%200%201%203.6%202.2'/%3E%3Cpath%20d='M22%2018h-6.041a4%204%200%200%201-3.3-1.8l-.359-.45'/%3E%3C/svg%3E") center / contain no-repeat; }
+#kiwix_serve_taskbar_random_button button::after { content: "Aleatório"; font-size: 14px; font-weight: 600; }
 
 /* sugestões da busca e carregamento */
 .autoComplete_wrapper > ul { background-color: var(--k-surface) !important; border: 1px solid var(--k-border) !important; margin-top: 8px !important;
@@ -97,13 +104,16 @@ a.suggest, a.suggest:visited, a.suggest:hover, a.suggest:active { font-size: 14.
   /* enquanto a busca está em uso o Kiwix esconde os botões para ela ocupar a largura toda */
   .kiwix #kiwixtoolbar .kiwix_button_cont.searching { display: none !important; }
   .kiwix #kiwixtoolbar .kiwix_searchform { width: auto; }
-  #kiwix_serve_taskbar_library_button::after { display: none; }
+  #kiwix_serve_taskbar_library_button::after, #kiwix_serve_taskbar_home_button::before,
+  #kiwix_serve_taskbar_random_button button::after { display: none; }
   /* só ícones: o acervo aberto vira um botão quadrado de "página inicial do acervo" */
-  #kiwix_serve_taskbar_home_button { flex: none; margin-right: 0; max-width: none; }
+  #kiwix_serve_taskbar_home_button { flex: none; margin-left: 0; max-width: none; overflow: visible; }
   .kiwix #kiwixtoolbar #kiwix_serve_taskbar_home_button button, .kiwix #kiwixtoolbar #kiwix_serve_taskbar_random_button button {
-    width: 40px; max-width: none; height: 40px !important; padding: 0 !important; font-size: 0 !important; }
-  #kiwix_serve_taskbar_home_button button::before { left: 0; right: 0; margin: auto; width: 18px; height: 18px; }
-  #kiwix_serve_taskbar_random_button button::before { width: 18px; height: 18px; }
+    display: block; position: relative; width: 40px; max-width: none; height: 40px !important; padding: 0 !important; font-size: 0 !important;
+    border: 1px solid var(--k-border-2) !important; border-radius: 10px !important; background: var(--k-surface) !important; color: var(--k-text) !important; }
+  #kiwix_serve_taskbar_home_button button::before, #kiwix_serve_taskbar_random_button button::before { content: ""; position: absolute; inset: 0;
+    margin: auto; width: 18px; height: 18px; background: currentColor; }
+  #kiwix_serve_taskbar_home_button button::before { -webkit-mask: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='black'%20stroke-width='2'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cpath%20d='M12%207v14'/%3E%3Cpath%20d='M3%2018a1%201%200%200%201-1-1V4a1%201%200%200%201%201-1h5a4%204%200%200%201%204%204%204%204%200%200%201%204-4h5a1%201%200%200%201%201%201v13a1%201%200%200%201-1%201h-6a3%203%200%200%200-3%203%203%203%200%200%200-3-3z'/%3E%3C/svg%3E") center / contain no-repeat; mask: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='black'%20stroke-width='2'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cpath%20d='M12%207v14'/%3E%3Cpath%20d='M3%2018a1%201%200%200%201-1-1V4a1%201%200%200%201%201-1h5a4%204%200%200%201%204%204%204%204%200%200%201%204-4h5a1%201%200%200%201%201%201v13a1%201%200%200%201-1%201h-6a3%203%200%200%200-3%203%203%203%200%200%200-3-3z'/%3E%3C/svg%3E") center / contain no-repeat; }
 }
 
 /* ---------- resultados da busca (/search) e páginas de erro do Kiwix ---------- */

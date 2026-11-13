@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"regexp"
+	"sort"
 	"strings"
 )
 
@@ -23,6 +24,7 @@ type ItemCatalogo struct {
 	Arquivo   string `json:"arquivo,omitempty"`
 	Grupo     string `json:"grupo"`
 	Tema      string `json:"tema,omitempty"` // subdivisão dentro do grupo (só para organizar a lista do gerenciador)
+	URL       string `json:"url,omitempty"`  // só nos acervos acrescentados por link
 	Titulo    string `json:"titulo"`
 	Descricao string `json:"descricao"`
 
@@ -85,6 +87,55 @@ func carregarCatalogo() (*Catalogo, error) {
 	return &c, nil
 }
 
+// grupoMeus recebe os acervos que a própria pessoa acrescenta, por link ou por arquivo. Fica por último.
+var grupoMeus = &Grupo{ID: "meus", Titulo: "Meus acervos", Dica: "acrescentados por você"}
+
+// personalizado: acervo de fora do catálogo ("link" ou "arquivo"), sem edição a acompanhar.
+func (it *ItemCatalogo) personalizado() bool { return it.Origem == "link" || it.Origem == "arquivo" }
+
+func itemPersonalizado(p *Personalizado) *ItemCatalogo {
+	return &ItemCatalogo{
+		ID: p.ID, Origem: p.Origem, URL: p.URL, Arquivo: p.Arquivo, Grupo: grupoMeus.ID,
+		Titulo: p.Titulo, Descricao: p.Descricao,
+		padrao: regexp.MustCompile(`^` + regexp.QuoteMeta(p.Arquivo) + `()$`), // só o próprio arquivo, sem edição no nome
+	}
+}
+
+// comPersonalizados devolve um catálogo novo: o de base mais os acervos da pessoa, no grupo "Meus acervos".
+// O catálogo em uso nunca é alterado: é trocado inteiro, e quem estava lendo o antigo não é afetado.
+func comPersonalizados(base *Catalogo, meus map[string]*Personalizado) *Catalogo {
+	c := &Catalogo{Versao: base.Versao, porID: map[string]*ItemCatalogo{}}
+	c.Grupos = append(append([]*Grupo{}, base.Grupos...), grupoMeus)
+	c.Itens = append([]*ItemCatalogo{}, base.Itens...)
+	ordem := make([]*Personalizado, 0, len(meus))
+	for _, p := range meus {
+		ordem = append(ordem, p)
+	}
+	sort.Slice(ordem, func(i, j int) bool {
+		if !ordem[i].AdicionadoEm.Equal(ordem[j].AdicionadoEm) {
+			return ordem[i].AdicionadoEm.Before(ordem[j].AdicionadoEm)
+		}
+		return ordem[i].ID < ordem[j].ID
+	})
+	for _, p := range ordem {
+		c.Itens = append(c.Itens, itemPersonalizado(p))
+	}
+	for _, it := range c.Itens {
+		c.porID[it.ID] = it
+	}
+	return c
+}
+
+// donoDoArquivo acha o item a que um arquivo da pasta de dados pertence, se houver.
+func (c *Catalogo) donoDoArquivo(nome string) *ItemCatalogo {
+	for _, it := range c.Itens {
+		if _, ok := it.edicaoDoArquivo(nome); ok {
+			return it
+		}
+	}
+	return nil
+}
+
 // edicaoDoArquivo diz se o nome do arquivo pertence ao item e qual edição ele traz ("" se não tiver no nome).
 func (it *ItemCatalogo) edicaoDoArquivo(nome string) (string, bool) {
 	m := it.padrao.FindStringSubmatch(nome)
@@ -98,6 +149,9 @@ func (it *ItemCatalogo) edicaoDoArquivo(nome string) (string, bool) {
 // assim a nova nunca sobrescreve a antiga enquanto o kiwix-serve ainda a tem aberta
 // (no Windows não dá para substituir arquivo aberto).
 func (it *ItemCatalogo) nomeArquivo(edicao string) string {
+	if it.personalizado() {
+		return it.Arquivo
+	}
 	if it.Origem == "github" {
 		base := strings.TrimSuffix(it.Arquivo, ".zim")
 		if edicao == "" {

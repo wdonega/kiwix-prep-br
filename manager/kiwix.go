@@ -56,6 +56,14 @@ func (a *App) reconstruirBiblioteca() error {
 			invalidos[idDoArquivo[arq]] = "O arquivo " + arq + " está corrompido ou não é um ZIM válido e não aparece na biblioteca. Apague e baixe de novo."
 		}
 	}
+	// O Kiwix guarda um acervo por identificador do ZIM: se dois arquivos são o mesmo ZIM com nomes
+	// diferentes, só um entra, sem erro nenhum. O outro ganha um aviso, para não parecer instalado e sumido.
+	naBiblioteca := lerBibliotecaDe(tmp)
+	for _, arq := range arquivos {
+		if _, ok := naBiblioteca[arq]; !ok && invalidos[idDoArquivo[arq]] == "" {
+			invalidos[idDoArquivo[arq]] = "O arquivo " + arq + " tem o mesmo conteúdo de outro acervo já instalado, então não aparece na biblioteca. Pode apagar."
+		}
+	}
 	a.mu.Lock()
 	for id := range a.est.Instalados {
 		if msg, ok := invalidos[id]; ok {
@@ -65,7 +73,11 @@ func (a *App) reconstruirBiblioteca() error {
 		}
 	}
 	a.mu.Unlock()
-	return os.Rename(tmp, a.caminhoBiblioteca())
+	if err := os.Rename(tmp, a.caminhoBiblioteca()); err != nil {
+		return err
+	}
+	a.atualizarDadosDosMeus()
+	return nil
 }
 
 // supervisionarKiwix inicia o kiwix-serve como processo filho e o reinicia se ele cair.

@@ -29,6 +29,7 @@ type Tarefa struct {
 	Baixado    atomic.Int64
 	Velocidade int64 // bytes/s, atualizado a cada segundo
 	Mirror     string
+	cli        *http.Client // por onde este download sai (o de endereço informado pela pessoa é mais restrito)
 	ctx        context.Context
 	cancelar   context.CancelFunc
 }
@@ -39,7 +40,7 @@ var errCancelado = errors.New("cancelado")
 func (a *App) enfileirar(id string) error {
 	a.mu.Lock()
 	defer a.mu.Unlock()
-	if a.cat.porID[id] == nil {
+	if a.cat().porID[id] == nil {
 		return fmt.Errorf("item desconhecido")
 	}
 	if a.tarefas[id] != nil {
@@ -107,7 +108,14 @@ func (a *App) trabalhador() {
 }
 
 func (a *App) baixar(t *Tarefa) (err error) {
-	it := a.cat.porID[t.ID]
+	it := a.cat().porID[t.ID]
+	if it == nil {
+		return fmt.Errorf("o acervo saiu da lista")
+	}
+	t.cli = a.http
+	if it.personalizado() {
+		t.cli = a.httpFora
+	}
 
 	// edição a baixar: a da última verificação; se não houver, verifica só este item agora
 	a.mu.Lock()
@@ -115,13 +123,21 @@ func (a *App) baixar(t *Tarefa) (err error) {
 	a.mu.Unlock()
 	if disp == nil {
 		var err error
-		if it.Origem == "github" {
+		switch it.Origem {
+		case "github":
 			disp, err = a.resolverGitHub(t.ctx, it)
-		} else {
+		case "kiwix":
 			disp, err = a.resolverKiwix(t.ctx, it, novasListagens())
+		case "link":
+			var info *infoLink
+			if info, err = a.inspecionarLink(t.ctx, it.URL, true); err == nil {
+				disp = info.disp
+			}
+		default:
+			err = fmt.Errorf("este acervo veio de um arquivo, não há de onde baixar de novo")
 		}
 		if err != nil {
-			return fmt.Errorf("não consegui achar a versão mais recente: %w", err)
+			return fmt.Errorf("não consegui achar o arquivo para baixar: %w", err)
 		}
 		a.mu.Lock()
 		a.est.Disponiveis[t.ID] = disp
@@ -174,6 +190,13 @@ func (a *App) baixar(t *Tarefa) (err error) {
 			os.Remove(parcial)
 			return fmt.Errorf("arquivo corrompido (sha-256 não confere); apaguei o download, tente de novo")
 		}
+	} else if err := conferirZim(t.ctx, parcial); err != nil {
+		// sem sha-256 publicado (link de fora do Kiwix): vale o checksum que o próprio ZIM carrega
+		if errors.Is(err, errCancelado) {
+			return err
+		}
+		os.Remove(parcial)
+		return fmt.Errorf("%v; apaguei o download, tente de novo", err)
 	}
 
 	// pronto: renomeia, registra e atualiza a biblioteca do kiwix-serve
@@ -270,7 +293,7 @@ func (a *App) baixarDe(t *Tarefa, u, parcial string, total int64) error {
 	if inicio > 0 {
 		req.Header.Set("Range", fmt.Sprintf("bytes=%d-", inicio))
 	}
-	resp, err := a.http.Do(req)
+	resp, err := t.cli.Do(req)
 	if err != nil {
 		return err
 	}
@@ -373,14 +396,29 @@ func sha256DoArquivo(ctx context.Context, caminho string) (string, error) {
 
 func (a *App) apagar(id string) error {
 	a.mu.Lock()
+	it := a.cat().porID[id]
+	if it == nil {
+		a.mu.Unlock()
+		return fmt.Errorf("item desconhecido")
+	}
 	if a.tarefas[id] != nil {
 		a.mu.Unlock()
 		return fmt.Errorf("já tem uma operação em andamento")
 	}
 	inst := a.est.Instalados[id]
 	if inst == nil {
+		if !it.personalizado() {
+			a.mu.Unlock()
+			return fmt.Errorf("não está instalado")
+		}
+		// acervo da pessoa que não chegou a ser baixado: só sai da lista
+		a.esquecerPersonalizado(it)
+		errSalvar := a.est.salvar(a.caminhoEstado())
 		a.mu.Unlock()
-		return fmt.Errorf("não está instalado")
+		if errSalvar != nil {
+			logf("salvar estado: %v", errSalvar)
+		}
+		return nil
 	}
 	ctx, cancel := context.WithCancel(a.ctx)
 	a.tarefas[id] = &Tarefa{ID: id, Situacao: "apagando", ctx: ctx, cancelar: cancel}
@@ -402,11 +440,26 @@ func (a *App) apagar(id string) error {
 		delete(a.tarefas, id)
 		if err != nil {
 			a.erros[id] = err.Error()
+		} else if it.personalizado() {
+			// o acervo da pessoa não fica na lista como "não instalado": some junto com o arquivo
+			a.esquecerPersonalizado(it)
+			if err := a.est.salvar(a.caminhoEstado()); err != nil {
+				logf("salvar estado: %v", err)
+			}
 		}
 		a.mu.Unlock()
 		logf("%s: apagado %s", id, inst.Arquivo)
 	}()
 	return nil
+}
+
+// esquecerPersonalizado tira um acervo da pessoa da lista. Chame com a.mu travado.
+func (a *App) esquecerPersonalizado(it *ItemCatalogo) {
+	delete(a.est.Personalizados, it.ID)
+	delete(a.est.Disponiveis, it.ID)
+	delete(a.erros, it.ID)
+	os.Remove(filepath.Join(a.cfg.Dados, it.Arquivo+".part"))
+	a.remontarCatalogo()
 }
 
 // apagarArquivo espera o kiwix-serve recarregar a biblioteca (e soltar o arquivo) antes de apagar.

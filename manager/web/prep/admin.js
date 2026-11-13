@@ -99,11 +99,17 @@ function linha(it) {
   const trava = travados.has(it.id) ? "disabled" : "";
   const id = esc(it.id);
 
+  const meu = it.origem === "link" || it.origem === "arquivo";   // acervo acrescentado pela pessoa
+  const deOnde = !meu ? "" : it.origem === "arquivo" ? "arquivo seu" : `link de ${esc(new URL(it.url).hostname)}`;
   const meta = [];
   if (inst) {
-    meta.push("Instalado", inst.edicao ? `edição ${esc(inst.edicao)}` : "edição desconhecida");
-    if (dataValida(inst.baixado_em)) meta.push(`baixado em ${dia(inst.baixado_em)}`);
+    meta.push("Instalado");
+    if (!meu || inst.edicao) meta.push(inst.edicao ? `edição ${esc(inst.edicao)}` : "edição desconhecida");
+    if (meu) meta.push(deOnde);
+    if (dataValida(inst.baixado_em)) meta.push(`${it.origem === "arquivo" ? "recebido" : "baixado"} em ${dia(inst.baixado_em)}`);
     if (s === "desatualizado" && disp) meta.push(`<span class="novo">nova: edição ${esc(disp.edicao)} · ${tamanho(disp.tamanho)}</span>`);
+  } else if (meu) {
+    meta.push(deOnde);
   } else if (disp) {
     meta.push(`Edição ${esc(disp.edicao)}`);
   } else {
@@ -117,6 +123,7 @@ function linha(it) {
   let acoes = "";
   if (s === "nao_instalado") {
     acoes = `${txtTam}<button class="btn btn-suave" type="button" data-a="baixar" data-id="${id}" aria-label="Baixar ${esc(it.titulo)}" ${trava}>${ico("download")}<span class="rot">Baixar</span></button>`;
+    if (meu) acoes += apagar.replace('data-dica="Apagar"', 'data-dica="Tirar da lista"');
   } else if (s === "instalado") {
     acoes = txtTam + apagar;
   } else if (s === "desatualizado") {
@@ -275,8 +282,13 @@ document.addEventListener("click", async (ev) => {
   const it = est.itens.find((i) => i.id === id);
   if (!it) return;
   if (a === "apagar") {
-    const ok = await confirmar({ titulo: `Apagar “${it.titulo}”?`, botao: "Apagar",
-      texto: `Libera ${tamanho(it.instalado?.tamanho)} em disco. Para ter de volta é só baixar de novo.` });
+    const meu = it.origem === "link" || it.origem === "arquivo";
+    const ok = await confirmar(!it.instalado
+      ? { titulo: `Tirar “${it.titulo}” da lista?`, botao: "Tirar da lista", texto: "Ele ainda não foi baixado. Para ter de volta é só colar o link de novo." }
+      : { titulo: `Apagar “${it.titulo}”?`, botao: "Apagar",
+          texto: `Libera ${tamanho(it.instalado.tamanho)} em disco. ` + (!meu ? "Para ter de volta é só baixar de novo."
+            : it.origem === "arquivo" ? "Ele sai da lista: para ter de volta você precisa enviar o arquivo de novo."
+            : "Ele sai da lista: para ter de volta é só colar o link de novo.") });
     if (ok) acao("apagar", id);
   } else if (a === "cancelar") {
     const ok = await confirmar({ titulo: "Cancelar o download?", botao: "Cancelar download", icone: "x",
@@ -292,6 +304,110 @@ $("b-verificar").addEventListener("click", async () => {
   try { await api("POST", "/api/verificar"); } catch (e) { avisar(e.message); }
   setTimeout(atualizar, 300);
 });
+
+// ---------------------------------------------------------------- adicionar um acervo seu
+
+const linhaErro = (msg) => `<div class="lin-erro">${ico("alert")}<span>${esc(msg.charAt(0).toUpperCase() + msg.slice(1))}.</span></div>`;
+
+async function apiJson(caminho, corpo) {
+  const r = await fetch(caminho, { method: "POST", headers: { "X-Prep-Admin": "1", "Content-Type": "application/json" }, body: JSON.stringify(corpo) });
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(j.erro || `HTTP ${r.status}`);
+  return j;
+}
+
+// 1) por link: primeiro confere o arquivo (só o cabeçalho é lido), depois a pessoa confirma
+$("f-link").addEventListener("submit", async (ev) => {
+  ev.preventDefault();
+  const url = $("link").value.trim();
+  if (!url) return;
+  const botao = $("b-inspecionar");
+  botao.disabled = true; botao.textContent = "Verificando…";
+  $("previa").hidden = false;
+  $("previa").innerHTML = "";
+  try {
+    const i = await apiJson("/api/meus/inspecionar", { url });
+    const meta = [esc(i.arquivo), tamanho(i.tamanho)];
+    if (i.artigos > 0) meta.push(`${i.artigos.toLocaleString("pt-BR")} artigos`);
+    meta.push(i.conferencia === "sha256" ? `conferido por sha-256 do Kiwix, ${i.mirrors} mirrors` : "conferido pelo checksum do próprio arquivo");
+    if (!i.retoma) meta.push("o servidor não permite continuar um download interrompido");
+    $("previa").innerHTML = `<div class="previa">
+      <div class="previa-tit">${esc(i.titulo)}<span class="etq etq-ok">${ico("check")}arquivo ZIM válido</span></div>
+      ${i.descricao ? `<div class="lin-desc">${esc(i.descricao)}</div>` : ""}
+      <div class="lin-meta">${meta.map((m) => `<span>${m}</span>`).join("")}</div>
+      <div class="previa-acoes">
+        <button class="btn btn-pri" type="button" id="b-add">${ico("download")}Baixar</button>
+        <button class="btn btn-fantasma" type="button" id="b-desistir">Cancelar</button>
+      </div></div>`;
+    $("b-desistir").onclick = () => { $("previa").hidden = true; };
+    $("b-add").onclick = async () => {
+      $("b-add").disabled = true;
+      try {
+        await apiJson("/api/meus/link", { url });
+        $("previa").hidden = true;
+        $("link").value = "";
+        await atualizar();
+      } catch (e) {
+        $("previa").innerHTML = linhaErro(e.message);
+      }
+    };
+  } catch (e) {
+    $("previa").innerHTML = linhaErro(e.message);
+  }
+  botao.disabled = false; botao.textContent = "Verificar";
+});
+
+// 2) por arquivo: enviado direto do navegador, com progresso
+let envio = null;
+function enviarArquivo(arq) {
+  if (!arq) return;
+  const caixa = $("envio");
+  caixa.hidden = false;
+  if (envio) { caixa.insertAdjacentHTML("beforeend", linhaErro("espere o envio atual terminar")); return; }
+  if (!/\.zim$/i.test(arq.name)) { caixa.innerHTML = linhaErro("precisa ser um arquivo .zim"); return; }
+  caixa.innerHTML = `<div class="envio">
+    <div class="envio-nome">${ico("upload")}<span>${esc(arq.name)}</span><button class="btn" type="button" id="b-parar">Cancelar</button></div>
+    <div class="prog"><div class="prog-barra"><i id="envio-barra"></i></div>
+      <div class="prog-info"><span id="envio-esq">Enviando…</span><span id="envio-dir"></span></div></div></div>`;
+  const x = envio = new XMLHttpRequest();
+  const inicio = Date.now();
+  x.open("PUT", "/api/meus/arquivo?nome=" + encodeURIComponent(arq.name));
+  x.setRequestHeader("X-Prep-Admin", "1");
+  x.upload.onprogress = (e) => {
+    if (!e.lengthComputable) return;
+    const pct = (e.loaded / e.total) * 100, seg = (Date.now() - inicio) / 1000, vel = seg > 1 ? e.loaded / seg : 0;
+    $("envio-barra").style.width = pct + "%";
+    $("envio-esq").innerHTML = `<b>${Math.floor(pct)}%</b> · ${tamanho(e.loaded)} de ${tamanho(e.total)}`;
+    $("envio-dir").textContent = vel > 0 && e.loaded < e.total ? `${tamanho(vel)}/s · faltam ${falta((e.total - e.loaded) / vel)}` : "";
+    if (e.loaded === e.total) {
+      $("envio-barra").parentElement.classList.add("indefinida");
+      $("envio-esq").textContent = "Conferindo a integridade do arquivo…";
+      $("b-parar").hidden = true;
+    }
+  };
+  const fim = (erro) => {
+    envio = null;
+    $("arquivo").value = "";
+    if (erro) { caixa.innerHTML = linhaErro(erro); return; }
+    caixa.hidden = true;
+    avisar(`“${arq.name}” entrou em Meus acervos.`, "ok");
+    atualizar();
+  };
+  x.onload = () => {
+    let j = {};
+    try { j = JSON.parse(x.responseText); } catch (e) { /* resposta sem JSON */ }
+    fim(x.status >= 200 && x.status < 300 ? null : j.erro || `o servidor respondeu ${x.status}`);
+  };
+  x.onerror = () => fim("o envio falhou (a conexão caiu?)");
+  x.onabort = () => { envio = null; $("arquivo").value = ""; caixa.hidden = true; };
+  $("b-parar").onclick = () => x.abort();
+  x.send(arq);
+}
+$("arquivo").addEventListener("change", () => enviarArquivo($("arquivo").files[0]));
+const soltar = $("soltar");
+["dragenter", "dragover"].forEach((t) => soltar.addEventListener(t, (ev) => { ev.preventDefault(); soltar.classList.add("sobre"); }));
+["dragleave", "drop"].forEach((t) => soltar.addEventListener(t, (ev) => { ev.preventDefault(); soltar.classList.remove("sobre"); }));
+soltar.addEventListener("drop", (ev) => enviarArquivo(ev.dataTransfer.files[0]));
 
 document.addEventListener("visibilitychange", () => { if (!document.hidden) atualizar(); });
 atualizar();

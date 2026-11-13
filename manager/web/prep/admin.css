@@ -83,6 +83,31 @@
 
 .lin-meta .so-cel { display: none; }
 
+/* ---------- adicionar um acervo seu ---------- */
+.add { padding: 14px 16px; display: grid; gap: 12px; }
+.add-link { display: flex; align-items: center; gap: 8px; position: relative; }
+.add-link > .i { position: absolute; left: 13px; width: 16px; height: 16px; color: var(--muted); pointer-events: none; }
+.add-link input { flex: 1; min-width: 0; height: 40px; padding: 0 12px 0 38px; border-radius: 10px; border: 1px solid var(--border-2);
+  background: var(--bg); color: var(--text); font: inherit; font-size: .9rem; }
+.add-link input::placeholder { color: var(--muted); }
+.add-link input:focus { outline: none; border-color: var(--accent-line); box-shadow: 0 0 0 4px var(--accent-soft); }
+.add-link .btn { height: 40px; }
+.soltar { display: flex; align-items: center; gap: 12px; padding: 16px; border-radius: 10px; border: 1px dashed var(--border-2);
+  color: var(--text-2); font-size: .88rem; cursor: pointer; transition: border-color .15s, background .15s, color .15s; }
+.soltar > .i { width: 20px; height: 20px; color: var(--muted); }
+.soltar b { color: var(--text); font-weight: 650; }
+.soltar:hover, .soltar.sobre { border-color: var(--accent-line); background: var(--accent-soft); color: var(--text); }
+.soltar.sobre > .i, .soltar:hover > .i { color: var(--accent); }
+.previa, .envio { padding: 13px 14px; border-radius: 10px; background: var(--surface-2); }
+.previa-tit { font-weight: 650; font-size: .96rem; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.previa .lin-meta { margin-top: 7px; }
+.previa-acoes { margin-top: 12px; display: flex; gap: 8px; }
+.envio-nome { font-weight: 600; font-size: .9rem; display: flex; align-items: center; gap: 10px; }
+.envio-nome span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.envio-nome .btn { margin-left: auto; height: 30px; padding: 0 10px; font-size: .8rem; }
+.add .lin-erro { margin-top: 0; }
+.add-nota { margin: 9px 2px 0; font-size: .78rem; color: var(--muted); }
+
 .nada { margin-top: 40px; text-align: center; color: var(--muted); font-size: .9rem; }
 
 /* ---------- confirmação ---------- */
@@ -103,7 +128,6 @@
   .painel .stat:nth-child(2) { grid-column: 1 / -1; grid-row: 2; }
 }
 @media (max-width: 640px) {
-  .marca-local { display: none; }
   .painel { grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); gap: 10px; padding-top: 16px; }
   .stat-rot { white-space: normal; }
   .stat .ibtn { width: 36px; height: 36px; margin-right: -4px; }
@@ -119,4 +143,7 @@
   .lin-acoes .btn .i { width: 18px; height: 18px; }
   .lin-acoes .ibtn { width: 40px; height: 40px; }
   .lin-extra { grid-column: 1 / -1; }
+  .grupo-cab { flex-wrap: wrap; row-gap: 4px; }
+  .add { padding: 12px; }
+  .soltar { padding: 14px 12px; }
 }

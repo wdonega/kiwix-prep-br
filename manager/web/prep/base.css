@@ -59,8 +59,11 @@ h1, h2, h3, p { margin: 0; }
 .marca-logo { width: 34px; height: 34px; border-radius: 10px; display: grid; place-items: center; color: #fff;
   background: linear-gradient(140deg, #2bb866, #15803d); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .28), 0 2px 8px -2px rgba(21, 128, 61, .6); }
 .marca-logo .i { width: 19px; height: 19px; }
-.marca-local { color: var(--muted); font-weight: 500; font-size: .95rem; display: flex; align-items: center; gap: 10px; }
-.marca-local::before { content: ""; width: 1px; height: 18px; background: var(--border-2); }
+/* à esquerda da barra: a marca e, depois de um traço, onde a pessoa está (Biblioteca, Gerenciar acervo, o acervo aberto) */
+.topo-esq { display: flex; align-items: center; gap: 16px; min-width: 0; }
+.marca-local { color: var(--muted); font-weight: 500; font-size: .875rem; display: flex; align-items: center; gap: 10px;
+  min-width: 0; white-space: nowrap; }
+.marca-local::before { content: ""; flex: none; width: 1px; height: 18px; background: var(--border-2); }
 .topo-acoes { margin-left: auto; display: flex; align-items: center; gap: 8px; position: relative; flex: none; }
 
 .ibtn { width: 40px; height: 40px; border-radius: 11px; display: grid; place-items: center; position: relative;
@@ -132,5 +135,6 @@ h1, h2, h3, p { margin: 0; }
 
 @media (max-width: 640px) {
   .topo-in { padding: 0 12px; gap: 10px; height: 58px; }
+  .marca-local { display: none; }
   .conteudo { padding: 0 14px; }
 }

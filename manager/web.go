@@ -134,11 +134,34 @@ func (a *App) proxyKiwix() *httputil.ReverseProxy {
 // ---------------------------------------------------------------- biblioteca (dados da página inicial)
 
 type livroXML struct {
-	ID      string `xml:"id,attr"`
-	Caminho string `xml:"path,attr"`
-	Idioma  string `xml:"language,attr"`
-	Artigos int64  `xml:"articleCount,attr"`
-	Midias  int64  `xml:"mediaCount,attr"`
+	ID        string `xml:"id,attr"`
+	Caminho   string `xml:"path,attr"`
+	Titulo    string `xml:"title,attr"`
+	Descricao string `xml:"description,attr"`
+	Idioma    string `xml:"language,attr"`
+	Artigos   int64  `xml:"articleCount,attr"`
+	Midias    int64  `xml:"mediaCount,attr"`
+}
+
+// lerBiblioteca lê o library.xml, o que o kiwix-serve está servindo, indexado pelo nome do arquivo.
+func (a *App) lerBiblioteca() map[string]livroXML { return lerBibliotecaDe(a.caminhoBiblioteca()) }
+
+func lerBibliotecaDe(caminho string) map[string]livroXML {
+	var bib struct {
+		Livros []livroXML `xml:"book"`
+	}
+	b, err := os.ReadFile(caminho)
+	if err == nil {
+		err = xml.Unmarshal(b, &bib)
+	}
+	if err != nil {
+		logf("lendo library.xml: %v", err)
+	}
+	porArquivo := map[string]livroXML{}
+	for _, l := range bib.Livros {
+		porArquivo[filepath.Base(l.Caminho)] = l
+	}
+	return porArquivo
 }
 
 type livro struct {
@@ -159,26 +182,14 @@ type livro struct {
 // apiBiblioteca lista o que o kiwix-serve está servindo agora: os itens instalados que entraram
 // no library.xml, com o título e a descrição do catálogo e os dados que o Kiwix leu de cada ZIM.
 func (a *App) apiBiblioteca(w http.ResponseWriter, r *http.Request) {
-	var bib struct {
-		Livros []livroXML `xml:"book"`
-	}
 	a.muBiblioteca.Lock()
-	b, err := os.ReadFile(a.caminhoBiblioteca())
+	porArquivo := a.lerBiblioteca()
 	a.muBiblioteca.Unlock()
-	if err == nil {
-		err = xml.Unmarshal(b, &bib)
-	}
-	if err != nil {
-		logf("lendo library.xml: %v", err)
-	}
-	porArquivo := map[string]livroXML{}
-	for _, l := range bib.Livros {
-		porArquivo[filepath.Base(l.Caminho)] = l
-	}
 
 	livros := []livro{}
+	cat := a.cat()
 	a.mu.Lock()
-	for _, it := range a.cat.Itens {
+	for _, it := range cat.Itens {
 		inst := a.est.Instalados[it.ID]
 		if inst == nil {
 			continue
@@ -205,5 +216,5 @@ func (a *App) apiBiblioteca(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Cache-Control", "no-store")
-	json.NewEncoder(w).Encode(map[string]any{"grupos": a.cat.Grupos, "livros": livros})
+	json.NewEncoder(w).Encode(map[string]any{"grupos": cat.Grupos, "livros": livros})
 }

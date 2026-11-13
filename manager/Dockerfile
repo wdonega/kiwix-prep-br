@@ -9,13 +9,15 @@
 FROM --platform=$BUILDPLATFORM golang:1-alpine AS build
 ARG TARGETOS=linux
 ARG TARGETARCH
+# versão da imagem (AAAA-MM-DD-rN, definida pelo workflow); aparece no rodapé do gerenciador
+ARG VERSAO=dev
 WORKDIR /src
 COPY go.mod ./
 COPY *.go catalogo.json ./
 COPY web ./web
 RUN CGO_ENABLED=0 GOTOOLCHAIN=local go vet ./... && \
     CGO_ENABLED=0 GOTOOLCHAIN=local GOOS=$TARGETOS GOARCH=$TARGETARCH \
-    go build -trimpath -ldflags="-s -w" -o /prep-manager .
+    go build -trimpath -ldflags="-s -w -X main.versao=$VERSAO" -o /prep-manager .
 
 FROM ghcr.io/kiwix/kiwix-serve:3.8.2@sha256:e478554a9920412eeb5ce1d73f24e4b28445ebed233187cdd03c623c32be46a5
 COPY --from=build /prep-manager /usr/local/bin/prep-manager

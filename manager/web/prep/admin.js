@@ -208,7 +208,7 @@ function render() {
   $("s-verificado").textContent = est.verificando ? "verificando…" : quando(est.verificado_em) || "ainda não";
   $("b-verificar").disabled = est.verificando;
   $("b-verificar").querySelector(".i").classList.toggle("girando", est.verificando);
-  $("s-catalogo").textContent = `Catálogo v${est.catalogo_versao}`;
+  $("s-catalogo").textContent = `Prep Wiki BR ${est.versao === "dev" ? "(versão local)" : est.versao} · catálogo v${est.catalogo_versao}`;
 
   const falhas = itens.filter((i) => i.erro_verificacao).length;
   $("alerta").hidden = est.verificando || falhas === 0;

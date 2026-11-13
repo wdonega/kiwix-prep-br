@@ -32,7 +32,11 @@ import (
 	"time"
 )
 
-const userAgent = "prep-wiki-br-manager/0.1 (+https://github.com/wdonega/prep-wiki-br)"
+// versao é preenchida no build da imagem (-ldflags "-X main.versao=AAAA-MM-DD-rN"), no mesmo formato
+// das releases das wikis. Num build local fica "dev".
+var versao = "dev"
+
+const userAgent = "prep-wiki-br-manager (+https://github.com/wdonega/prep-wiki-br)"
 
 //go:embed web
 var webFS embed.FS
@@ -174,7 +178,7 @@ func main() {
 		srv.Shutdown(c)
 	}()
 	logf("dados em %s · catálogo v%d com %d ZIMs · %d instalados", cfg.Dados, cat.Versao, len(cat.Itens), len(a.est.Instalados))
-	logf("gerenciador em http://%s/admin/", cfg.Endereco)
+	logf("Prep Wiki BR %s · gerenciador em http://%s/admin/", versao, cfg.Endereco)
 	if err := srv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 		log.Fatal(err)
 	}
@@ -311,6 +315,7 @@ func (a *App) apiEstado(w http.ResponseWriter, r *http.Request) {
 		itens = append(itens, v)
 	}
 	resp := map[string]any{
+		"versao":          versao,
 		"catalogo_versao": a.cat.Versao,
 		"grupos":          a.cat.Grupos,
 		"verificado_em":   a.est.VerificadoEm,

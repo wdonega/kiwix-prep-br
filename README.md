@@ -6,6 +6,15 @@ Quando a rede cai, numa enchente, num apagão, no sítio ou na estrada, o que vo
 
 ![Página inicial da biblioteca, com os acervos instalados](docs/img/biblioteca.png)
 
+**Neste README:**
+[O que é](#o-que-é) ·
+[O que tem](#o-que-tem) ([em português](#em-português), [Prepper em inglês](#prepper-em-inglês)) ·
+[Como instalar](#como-instalar) ·
+[As duas wikis do projeto](#as-duas-wikis-do-projeto) ·
+[Para quem quer mexer](#para-quem-quer-mexer) ·
+[Licenças](#licenças) ·
+[Agradecimentos](#agradecimentos)
+
 ## O que é
 
 <img src="docs/img/celular.png" alt="A biblioteca no celular" width="250" align="right">
@@ -65,13 +74,11 @@ A lista completa, com a descrição de cada acervo, está em [`manager/catalogo.
 
 ## Como instalar
 
-### Com Docker (recomendado)
-
 Precisa só do [Docker](https://docs.docker.com/engine/install/) e de espaço em disco para o que você for baixar. A imagem existe para PC (x86 de 64 bits) e para ARM de 64 bits, como o Raspberry Pi 4 e 5. Foi testada em PC com Linux; no Raspberry Pi ainda não.
 
 ```bash
 docker run -d --name prep-wiki-br --restart unless-stopped \
-  -p 8099:8080 -v ~/prep-wiki-br:/data ghcr.io/wdonega/prep-wiki-br
+  -p 8099:8080 -v ~/prep-wiki-br:/data ghcr.io/wdonega/prep-wiki-br:latest
 ```
 
 Abra **http://localhost:8099** (ou `http://<ip-da-máquina>:8099` de outro aparelho da rede). Na primeira vez a biblioteca está vazia e você cai direto no gerenciador:
@@ -88,7 +95,8 @@ O que vale saber:
 - **Downloads:** vêm dos mirrors oficiais do Kiwix e das releases deste repositório. Se um mirror cai, o gerenciador troca para o próximo e continua de onde parou. Cada arquivo é conferido por sha-256 antes de entrar na biblioteca.
 - **Atualizações dos acervos:** quando sai uma edição nova de um acervo instalado, o gerenciador mostra **Atualizar**.
 - **Sem senha:** qualquer pessoa na mesma rede consegue baixar e apagar acervos. Não exponha a porta na internet do jeito que está.
-- **Atualizar o Prep Wiki BR:** `docker pull ghcr.io/wdonega/prep-wiki-br`, depois `docker rm -f prep-wiki-br` e o mesmo `docker run` de cima. Os acervos baixados continuam na pasta.
+- **Versões da imagem:** `:latest` é sempre a mais recente. Cada versão também tem uma tag fixa no formato `AAAA-MM-DD-rN` (por exemplo `:2026-11-13-r2`), listada nas [releases](https://github.com/wdonega/prep-wiki-br/releases?q=imagem&expanded=true). Para ficar numa versão específica, troque `latest` por ela. A versão em uso aparece no rodapé do gerenciador.
+- **Atualizar o Prep Wiki BR:** `docker pull ghcr.io/wdonega/prep-wiki-br:latest`, depois `docker rm -f prep-wiki-br` e o mesmo `docker run` de cima. Os acervos baixados continuam na pasta.
 
 <details>
 <summary><b>Com Docker Compose, a partir do código</b></summary>
@@ -105,29 +113,11 @@ Os acervos ficam em `manager/dados/`. Porta, pasta e usuário mudam num arquivo 
 
 </details>
 
-### Sem servidor, no celular ou no computador
-
-Dá para usar os acervos sem instalar o Prep Wiki BR, só com o aplicativo do Kiwix:
-
-1. Instale o **Kiwix** no celular (Android ou iOS) ou o [Kiwix Desktop](https://kiwix.org/pt-br/applications/) no computador.
-2. Baixe pelo próprio aplicativo os acervos que quiser, filtrando por português.
-3. Para as duas wikis deste projeto, baixe o `.zim` nos links [abaixo](#as-duas-wikis-do-projeto) e abra o arquivo no aplicativo.
-
-### Num kiwix-serve que você já tem
-
-O script [`baixar-acervo-pt.sh`](baixar-acervo-pt.sh) baixa uma seleção de 15 acervos em português (~10 GB) para a pasta em que for executado:
-
-```bash
-cd /pasta/dos/zims
-curl -fLO https://raw.githubusercontent.com/wdonega/prep-wiki-br/main/baixar-acervo-pt.sh
-sh baixar-acervo-pt.sh
-```
-
-Se a conexão cair, rode de novo: o download continua de onde parou. Os nomes dos arquivos têm a data da edição, então quando o Kiwix publica uma edição nova e apaga a antiga, a linha correspondente do script precisa ser atualizada. O gerenciador não tem esse problema, porque procura sempre a edição mais recente.
-
 ## As duas wikis do projeto
 
 Cada uma é um arquivo `.zim` gerado a partir de publicações oficiais, com o texto reorganizado para leitura, busca, índice e citação da página de origem. Os PDFs originais vão junto dentro do arquivo.
+
+Elas já vêm no catálogo do Prep Wiki BR, mas não dependem dele: o arquivo abre em qualquer Kiwix, seja o aplicativo de celular, o [Kiwix Desktop](https://kiwix.org/pt-br/applications/) ou um `kiwix-serve`. É só baixar e abrir.
 
 | | O que tem | Ver online | Baixar |
 |---|---|---|---|
@@ -144,7 +134,6 @@ manager/              o Prep Wiki BR: gerenciador em Go, páginas e catálogo
   web/                página inicial, gerenciador e o estilo aplicado ao leitor
 sisteminha-embrapa/   fonte da wiki do Sisteminha (textos, figuras, build.py)
 plantas-medicinais/   fonte da wiki de Plantas Medicinais
-baixar-acervo-pt.sh   script para quem usa só o kiwix-serve
 ```
 
 - **Acrescentar um acervo ao catálogo:** inclua uma linha em `manager/catalogo.json` com o nome do arquivo no Kiwix (sem a data), a pasta em que ele fica em `download.kiwix.org/zim/`, o grupo, o título e a descrição. A edição mais recente é descoberta sozinha.
@@ -153,7 +142,7 @@ baixar-acervo-pt.sh   script para quem usa só o kiwix-serve
   python3 -m venv venv && venv/bin/pip install -r requirements.txt
   cd plantas-medicinais && ../venv/bin/python build.py
   ```
-- **Imagem Docker:** um push na `main` que mexe em `manager/` monta a imagem para `amd64` e `arm64` e publica em `ghcr.io/wdonega/prep-wiki-br`.
+- **Imagem Docker:** um push na `main` que mexe em `manager/` roda o workflow [`imagem.yml`](.github/workflows/imagem.yml), que monta a imagem para `amd64` e `arm64`, publica em `ghcr.io/wdonega/prep-wiki-br` com as tags `AAAA-MM-DD-rN` e `latest`, e cria uma release `imagem-AAAA-MM-DD-rN`.
 - **Releases das wikis:** cada wiki tem um workflow no GitHub Actions. Um push na `main` que mexe na pasta dela gera o ZIM de novo e publica uma release com tag `<pasta>-AAAA-MM-DD-rN`. A release `<pasta>-latest` também é atualizada, e é ela que mantém o link fixo.
 - **Criar uma wiki nova:** uma pasta com um `build.py` que gere um `*.zim`, mais uma cópia de `.github/workflows/plantas-medicinais.yml` com o nome da pasta trocado.
 

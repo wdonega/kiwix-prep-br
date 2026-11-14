@@ -36,6 +36,7 @@ func pagina(web fs.FS, nome string) http.HandlerFunc {
 		}
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 		w.Header().Set("Cache-Control", "no-cache")
+		w.Header().Set("X-Frame-Options", "DENY") // nossas páginas não vão dentro de um frame (anticlickjacking)
 		w.Write(b)
 	}
 }
@@ -45,6 +46,12 @@ func estaticos(web fs.FS) http.Handler {
 	sub, _ := fs.Sub(web, "prep")
 	servidor := http.StripPrefix("/prep/", http.FileServer(http.FS(sub)))
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// sem listagem de diretório: só arquivos. Um caminho terminado em "/" (ou /prep puro)
+		// faria o http.FileServer listar os nomes dos arquivos; aqui vira 404.
+		if strings.HasSuffix(r.URL.Path, "/") {
+			http.NotFound(w, r)
+			return
+		}
 		w.Header().Set("Cache-Control", "no-cache")
 		servidor.ServeHTTP(w, r)
 	})

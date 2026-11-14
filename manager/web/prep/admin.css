@@ -14,7 +14,7 @@
 .stat-val-p { font-size: 1.02rem; font-weight: 650; }
 .stat-rot { font-size: .78rem; color: var(--muted); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .disco { height: 6px; margin: 7px 0 5px; border-radius: 999px; background: var(--surface-2); overflow: hidden; display: flex; }
-.disco i { display: block; height: 100%; width: 0; background: var(--border-2); transition: width .5s; }
+.disco i { display: block; height: 100%; width: 0; background: var(--muted); transition: width .5s; } /* outros usos: cinza neutro, distinto do espaço livre (a trilha) e do verde do acervo */
 .disco i.acervo { background: var(--accent); }
 
 .alerta { margin-top: 14px; display: flex; align-items: flex-start; gap: 10px; padding: 11px 14px; border-radius: var(--raio-p);

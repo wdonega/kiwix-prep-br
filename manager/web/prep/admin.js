@@ -224,7 +224,7 @@ function render() {
   $("s-catalogo").textContent = `Prep Wiki BR ${est.versao === "dev" ? "(versão local)" : est.versao} · catálogo v${est.catalogo_versao}`;
 
   const falhas = itens.filter((i) => i.erro_verificacao).length;
-  $("alerta").hidden = est.verificando || falhas === 0;
+  $("alerta").hidden = somenteLeitura || est.verificando || falhas === 0;
   if (falhas) {
     $("alerta").innerHTML = ico("alert") + `<span>Não consegui verificar a versão mais recente de ${falhas} ${falhas === 1 ? "acervo" : "acervos"}
       (sem internet?). Mostrando a última informação conhecida.</span>`;

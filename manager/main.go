@@ -233,10 +233,11 @@ func (a *App) rotas() http.Handler {
 	// páginas próprias
 	mux.HandleFunc("GET /{$}", func(w http.ResponseWriter, r *http.Request) {
 		// primeira vez, sem nada instalado: vai direto para o gerenciador
+		// (só para quem pode usá-lo; quem acabou de sair fica na página inicial)
 		a.mu.Lock()
 		vazio := len(a.est.Instalados) == 0
 		a.mu.Unlock()
-		if vazio {
+		if vazio && a.porteiro.liberado(r) {
 			http.Redirect(w, r, "/admin/", http.StatusFound)
 			return
 		}

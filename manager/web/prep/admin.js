@@ -414,7 +414,7 @@ soltar.addEventListener("drop", (ev) => enviarArquivo(ev.dataTransfer.files[0]))
 
 $("b-sair").addEventListener("click", async () => {
   await api("POST", "/api/sair").catch(() => {});
-  location.reload();
+  location.href = "/";
 });
 
 document.addEventListener("visibilitychange", () => { if (!document.hidden) atualizar(); });

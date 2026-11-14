@@ -39,6 +39,8 @@ function falta(seg) {
 
 // ---------------------------------------------------------------- servidor
 
+let somenteLeitura = false;
+
 async function api(metodo, caminho) {
   const r = await fetch(caminho, { method: metodo, headers: { "X-Prep-Admin": "1" }, cache: "no-store" });
   if (r.status === 401) { location.reload(); return new Promise(() => {}); } // sessão expirou: volta para a senha
@@ -64,7 +66,7 @@ async function acao(tipo, id) {
 function avisar(msg, tipo = "erro") {
   const el = document.createElement("div");
   el.className = "aviso-f " + tipo;
-  el.innerHTML = ico(tipo === "erro" ? "alert" : "check-circle") + `<span>${esc(msg)}</span>`;
+  el.innerHTML = ico({ erro: "alert", info: "lock" }[tipo] || "check-circle") + `<span>${esc(msg)}</span>`;
   $("avisos").append(el);
   setTimeout(() => el.remove(), 6000);
 }
@@ -217,6 +219,8 @@ function render() {
   $("b-verificar").disabled = est.verificando;
   $("b-verificar").querySelector(".i").classList.toggle("girando", est.verificando);
   $("b-sair").hidden = !est.com_senha;
+  somenteLeitura = est.modo === "leitura";
+  $("faixa-leitura").hidden = !somenteLeitura;
   $("s-catalogo").textContent = `Prep Wiki BR ${est.versao === "dev" ? "(versão local)" : est.versao} · catálogo v${est.catalogo_versao}`;
 
   const falhas = itens.filter((i) => i.erro_verificacao).length;
@@ -419,3 +423,23 @@ $("b-sair").addEventListener("click", async () => {
 
 document.addEventListener("visibilitychange", () => { if (!document.hidden) atualizar(); });
 atualizar();
+
+// ---------------------------------------------------------------- modo somente leitura
+// A tela fica igual, mas toda ação só avisa. A trava de verdade é no servidor: no modo leitura
+// essas rotas nem existem, então chamar a API direto também não muda nada.
+const AVISO_LEITURA = "O gerenciador está em modo somente leitura: baixar, atualizar, apagar e acrescentar acervos estão desligados.";
+const ehAcao = (el) => el.closest && el.closest("[data-a], #b-verificar, #b-inspecionar, #soltar, #b-add");
+function avisarLeitura() { // um aviso por vez, mesmo clicando várias vezes
+  document.querySelectorAll(".aviso-f.info").forEach((el) => el.remove());
+  avisar(AVISO_LEITURA, "info");
+}
+function barrarNaLeitura(ev) {
+  if (!somenteLeitura || !ehAcao(ev.target)) return;
+  ev.preventDefault();
+  ev.stopImmediatePropagation();
+  if (ev.type === "click" || ev.type === "drop") avisarLeitura();
+}
+["click", "drop", "dragover"].forEach((t) => document.addEventListener(t, barrarNaLeitura, true));
+document.addEventListener("submit", (ev) => { // Enter no campo do link
+  if (somenteLeitura && ev.target.id === "f-link") { ev.preventDefault(); ev.stopImmediatePropagation(); avisarLeitura(); }
+}, true);

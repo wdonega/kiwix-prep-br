@@ -126,8 +126,8 @@ function render() {
   if (!livros.length) {
     html += `<div class="vazio"><div class="vazio-ico">${ico("library")}</div>
       <h2>Nenhum acervo instalado ainda</h2>
-      <p>Escolha o que baixar no gerenciador. Depois de baixado, tudo funciona sem internet.</p>
-      <a class="btn btn-pri" href="/admin/">${ico("settings")}Abrir o gerenciador</a></div>`;
+      ${comAdmin ? `<p>Escolha o que baixar no gerenciador. Depois de baixado, tudo funciona sem internet.</p>
+      <a class="btn btn-pri" href="/admin/">${ico("settings")}Abrir o gerenciador</a>` : `<p>Os acervos aparecem aqui quando forem colocados na pasta do servidor.</p>`}</div>`;
   } else if (!visiveis.length) {
     html += `<div class="vazio"><div class="vazio-ico">${ico("search")}</div>
       <h2>Nenhum acervo com esse nome</h2>
@@ -167,6 +167,7 @@ document.addEventListener("keydown", (ev) => {
 // ---------------------------------------------------------------- dados
 
 let ultima = "";
+let comAdmin = true;
 async function carregar() {
   try {
     const r = await fetch("/api/biblioteca", { cache: "no-store" });
@@ -175,7 +176,8 @@ async function carregar() {
     if (texto === ultima) return; // nada mudou: não redesenha (preserva foco e rolagem)
     ultima = texto;
     const j = JSON.parse(texto);
-    livros = j.livros; grupos = j.grupos;
+    livros = j.livros; grupos = j.grupos; comAdmin = j.admin !== false;
+    $("b-admin").hidden = !comAdmin;
     render();
   } catch (e) {
     if (livros === null) {

@@ -49,7 +49,16 @@ type Config struct {
 	KiwixManage string   // caminho do kiwix-manage
 	KiwixPorta  int      // porta interna do kiwix-serve (só 127.0.0.1)
 	KiwixArgs   []string // opções extras para o kiwix-serve
+	Admin       string   // "completo", "leitura" ou "desligado" (PREP_ADMIN)
 }
+
+// Modos do gerenciador. A trava é no servidor: as rotas que o modo não permite nem são
+// registradas, então não há botão escondido que dê para chamar direto.
+const (
+	adminCompleto  = "completo"  // baixar, apagar, atualizar, acrescentar
+	adminLeitura   = "leitura"   // só ver: o que está instalado, versões, disco
+	adminDesligado = "desligado" // sem gerenciador: /admin/ e a API dele não existem
+)
 
 type App struct {
 	cfg      Config
@@ -130,10 +139,23 @@ func lerConfig() Config {
 	if extra := strings.Fields(os.Getenv("PREP_KIWIX_ARGS")); len(extra) > 0 {
 		c.KiwixArgs = extra
 	}
+	switch c.Admin = strings.ToLower(strings.TrimSpace(env("PREP_ADMIN", adminCompleto))); c.Admin {
+	case adminCompleto, adminLeitura, adminDesligado:
+	default:
+		// valor errado não cai no modo aberto: quem queria trancar e errou a digitação não fica exposto
+		log.Fatalf("PREP_ADMIN=%q não existe; use completo, leitura ou desligado", os.Getenv("PREP_ADMIN"))
+	}
 	if abs, err := filepath.Abs(c.Dados); err == nil {
 		c.Dados = abs
 	}
 	return c
+}
+
+func modoNoLog(m string) string {
+	if m == adminLeitura {
+		return "somente leitura"
+	}
+	return "completo"
 }
 
 func logf(formato string, args ...any) { log.Printf(formato, args...) }
@@ -164,7 +186,11 @@ func main() {
 	if a.est, err = carregarEstado(a.caminhoEstado()); err != nil {
 		log.Fatalf("estado.json: %v", err)
 	}
-	if a.porteiro, err = novoPorteiro(cfg.Dados, os.Getenv("PREP_SENHA")); err != nil {
+	senha := os.Getenv("PREP_SENHA")
+	if cfg.Admin == adminDesligado {
+		senha = "" // sem gerenciador, não há o que proteger
+	}
+	if a.porteiro, err = novoPorteiro(cfg.Dados, senha); err != nil {
 		log.Fatalf("senha: %v", err)
 	}
 	a.remontarCatalogo()
@@ -182,8 +208,12 @@ func main() {
 	}
 
 	go a.supervisionarKiwix()
-	go a.trabalhador()
-	go a.verificar(ctx)
+	if cfg.Admin == adminCompleto {
+		go a.trabalhador()
+	}
+	if cfg.Admin != adminDesligado { // desligado: a máquina não sai para a internet sozinha
+		go a.verificar(ctx)
+	}
 	a.esperarKiwix(ctx)
 
 	srv := &http.Server{Addr: cfg.Endereco, Handler: a.rotas(), ReadHeaderTimeout: 15 * time.Second}
@@ -195,11 +225,24 @@ func main() {
 	}()
 	logf("dados em %s · catálogo v%d com %d ZIMs · %d da pessoa · %d instalados", cfg.Dados, cat.Versao, len(cat.Itens),
 		len(a.est.Personalizados), len(a.est.Instalados))
-	logf("Prep Wiki BR %s · gerenciador em http://%s/admin/", versao, cfg.Endereco)
-	if a.porteiro.ativo() {
-		logf("admin protegido por senha (PREP_SENHA)")
+	if cfg.Admin == adminDesligado {
+		logf("Prep Wiki BR %s · biblioteca em http://%s/", versao, cfg.Endereco)
 	} else {
-		logf("admin sem senha: defina PREP_SENHA para proteger")
+		logf("Prep Wiki BR %s · gerenciador em http://%s/admin/", versao, cfg.Endereco)
+	}
+	switch {
+	case cfg.Admin == adminDesligado:
+		logf("gerenciador desligado (PREP_ADMIN=desligado): só a biblioteca está no ar")
+		if os.Getenv("PREP_SENHA") != "" {
+			logf("PREP_SENHA ignorada: com o gerenciador desligado não há o que proteger")
+		}
+	case a.porteiro.ativo():
+		logf("gerenciador %s, protegido por senha (PREP_SENHA)", modoNoLog(cfg.Admin))
+		if len([]rune(os.Getenv("PREP_SENHA"))) < 12 {
+			logf("aviso: a senha tem menos de 12 caracteres; se o endereço for público, use uma senha longa")
+		}
+	default:
+		logf("gerenciador %s, sem senha: defina PREP_SENHA para proteger", modoNoLog(cfg.Admin))
 	}
 	if err := srv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 		log.Fatal(err)
@@ -237,33 +280,43 @@ func (a *App) rotas() http.Handler {
 		a.mu.Lock()
 		vazio := len(a.est.Instalados) == 0
 		a.mu.Unlock()
-		if vazio && a.porteiro.liberado(r) {
+		if vazio && a.cfg.Admin != adminDesligado && a.porteiro.liberado(r) {
 			http.Redirect(w, r, "/admin/", http.StatusFound)
 			return
 		}
 		pagina(web, "home.html")(w, r)
 	})
-	mux.HandleFunc("GET /admin/{$}", pagina(web, "admin.html"))
-	mux.HandleFunc("GET /admin", func(w http.ResponseWriter, r *http.Request) {
-		http.Redirect(w, r, "/admin/", http.StatusFound)
-	})
 	mux.Handle("GET /prep/", estaticos(web))
-
-	// API
 	mux.HandleFunc("GET /api/biblioteca", a.apiBiblioteca)
-	mux.HandleFunc("GET /api/estado", a.apiEstado)
-	mux.HandleFunc("POST /api/verificar", func(w http.ResponseWriter, r *http.Request) {
-		go a.verificar(a.ctx)
-		responderOK(w)
-	})
-	mux.HandleFunc("POST /api/baixar/{id}", a.acao(a.enfileirar))
-	mux.HandleFunc("POST /api/cancelar/{id}", a.acao(a.cancelar))
-	mux.HandleFunc("POST /api/apagar/{id}", a.acao(a.apagar))
-	mux.HandleFunc("POST /api/meus/inspecionar", a.apiInspecionarLink)
-	mux.HandleFunc("POST /api/meus/link", a.apiAdicionarLink)
-	mux.HandleFunc("PUT /api/meus/arquivo", a.apiEnviarArquivo)
-	mux.HandleFunc("POST /api/entrar", a.porteiro.apiEntrar)
-	mux.HandleFunc("POST /api/sair", a.porteiro.apiSair)
+
+	// /admin e /api são nossos em qualquer modo: o que não estiver registrado abaixo dá 404 aqui,
+	// em vez de seguir para o kiwix-serve.
+	naoExiste := func(w http.ResponseWriter, r *http.Request) { http.NotFound(w, r) }
+	mux.HandleFunc("/admin", naoExiste)
+	mux.HandleFunc("/admin/", naoExiste)
+	mux.HandleFunc("/api/", naoExiste)
+
+	if a.cfg.Admin != adminDesligado { // leitura e completo
+		mux.HandleFunc("GET /admin/{$}", pagina(web, "admin.html"))
+		mux.HandleFunc("GET /admin", func(w http.ResponseWriter, r *http.Request) {
+			http.Redirect(w, r, "/admin/", http.StatusFound)
+		})
+		mux.HandleFunc("GET /api/estado", a.apiEstado)
+		mux.HandleFunc("POST /api/entrar", a.porteiro.apiEntrar)
+		mux.HandleFunc("POST /api/sair", a.porteiro.apiSair)
+	}
+	if a.cfg.Admin == adminCompleto { // tudo o que muda alguma coisa
+		mux.HandleFunc("POST /api/verificar", func(w http.ResponseWriter, r *http.Request) {
+			go a.verificar(a.ctx)
+			responderOK(w)
+		})
+		mux.HandleFunc("POST /api/baixar/{id}", a.acao(a.enfileirar))
+		mux.HandleFunc("POST /api/cancelar/{id}", a.acao(a.cancelar))
+		mux.HandleFunc("POST /api/apagar/{id}", a.acao(a.apagar))
+		mux.HandleFunc("POST /api/meus/inspecionar", a.apiInspecionarLink)
+		mux.HandleFunc("POST /api/meus/link", a.apiAdicionarLink)
+		mux.HandleFunc("PUT /api/meus/arquivo", a.apiEnviarArquivo)
+	}
 
 	// todo o resto é do kiwix-serve
 	mux.Handle("/", a.proxyKiwix())
@@ -345,6 +398,7 @@ func (a *App) apiEstado(w http.ResponseWriter, r *http.Request) {
 	resp := map[string]any{
 		"versao":          versao,
 		"com_senha":       a.porteiro.ativo(),
+		"modo":            a.cfg.Admin,
 		"catalogo_versao": a.cat().Versao,
 		"grupos":          a.cat().Grupos,
 		"verificado_em":   a.est.VerificadoEm,

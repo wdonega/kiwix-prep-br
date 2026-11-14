@@ -96,6 +96,7 @@ O que vale saber:
 - **Acervos seus:** no fim do gerenciador dá para acrescentar qualquer arquivo `.zim` que não esteja na lista, colando o link ou enviando o arquivo do seu aparelho. O link é conferido antes de baixar. Um `.zim` copiado direto para a pasta também entra, depois de reiniciar o container.
 - **Atualizações dos acervos:** quando sai uma edição nova de um acervo instalado, o gerenciador mostra **Atualizar**.
 - **Senha do gerenciador:** acrescente `-e PREP_SENHA=sua-senha` ao `docker run` e o gerenciador passa a pedir a senha (o navegador fica lembrado por 30 dias; o botão **Sair** desconecta). A biblioteca e a leitura continuam abertas para todo mundo. Sem `PREP_SENHA`, qualquer pessoa na mesma rede consegue baixar e apagar acervos. Para abrir na internet, use a senha e acesse por HTTPS (um proxy ou um túnel na frente), senão a senha passa aberta pela rede.
+- **Modo do gerenciador:** `-e PREP_ADMIN=` com `completo` (o padrão: baixa, apaga, acrescenta), `leitura` (mostra o que está instalado, as versões e o disco, sem nenhuma ação) ou `desligado` (o gerenciador não existe: só a biblioteca fica no ar, e acervos novos entram copiando o `.zim` para a pasta e reiniciando). A trava é no servidor: nos modos `leitura` e `desligado` as ações nem existem, não estão só escondidas. A senha vale nos modos `completo` e `leitura`. Um valor errado impede o container de subir, para nunca cair no modo aberto por engano.
 - **Versões da imagem:** `:latest` é sempre a mais recente. Cada versão também tem uma tag fixa no formato `AAAA-MM-DD-rN` (por exemplo `:2026-11-13-r2`), listada nas [releases](https://github.com/wdonega/prep-wiki-br/releases?q=imagem&expanded=true). Para ficar numa versão específica, troque `latest` por ela. A versão em uso aparece no rodapé do gerenciador.
 - **Instalar numa máquina sem internet:** cada [release da imagem](https://github.com/wdonega/prep-wiki-br/releases?q=imagem&expanded=true) traz a imagem em arquivo (`.tar.gz`, ~30 MB), um para PC (`amd64`) e um para ARM (`arm64`). Leve o arquivo para a máquina, rode `docker load -i <arquivo>` e depois o `docker run` de cima.
 - **Atualizar o Prep Wiki BR:** `docker pull ghcr.io/wdonega/prep-wiki-br:latest`, depois `docker rm -f prep-wiki-br` e o mesmo `docker run` de cima. Os acervos baixados continuam na pasta.
@@ -111,7 +112,7 @@ cd prep-wiki-br/manager
 docker compose up -d --build
 ```
 
-Os acervos ficam em `manager/dados/`. Porta, pasta, usuário e senha mudam num arquivo `manager/.env`, com `PREP_PORTA`, `PREP_PASTA`, `PREP_UID`, `PREP_GID` e `PREP_SENHA`. Se o seu usuário não for o 1000 (veja com `id -u`), ajuste os dois últimos. Para atualizar: `git pull` e `docker compose up -d --build`.
+Os acervos ficam em `manager/dados/`. Porta, pasta, usuário e senha mudam num arquivo `manager/.env`, com `PREP_PORTA`, `PREP_PASTA`, `PREP_UID`, `PREP_GID`, `PREP_SENHA` e `PREP_ADMIN`. Se o seu usuário não for o 1000 (veja com `id -u`), ajuste os dois últimos. Para atualizar: `git pull` e `docker compose up -d --build`.
 
 </details>
 

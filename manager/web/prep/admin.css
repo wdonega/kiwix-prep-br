@@ -19,6 +19,7 @@
 
 .alerta { margin-top: 14px; display: flex; align-items: flex-start; gap: 10px; padding: 11px 14px; border-radius: var(--raio-p);
   background: var(--warn-soft); color: var(--warn); font-size: .875rem; }
+.alerta-info { background: var(--info-soft); color: var(--info); }
 .alerta .i { width: 17px; height: 17px; margin-top: 2px; }
 
 /* ---------- abas ---------- */

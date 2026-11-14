@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="robots" content="noindex">
+<title>Prep Wiki BR · entrar</title>
+<link rel="icon" href="/prep/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/prep/base.css">
+<link rel="stylesheet" href="/prep/admin.css">
+</head>
+<body>
+<header class="topo">
+  <div class="topo-in">
+    <div class="topo-esq">
+      <a class="marca" href="/" aria-label="Prep Wiki BR, página inicial">
+        <span class="marca-logo"><svg class="i" aria-hidden="true"><use href="/prep/icones.svg#i-backpack"/></svg></span>
+        <span class="marca-nome">Prep Wiki BR</span>
+      </a>
+      <span class="marca-local">Gerenciar acervo</span>
+    </div>
+    <nav class="topo-acoes" aria-label="Opções">
+      <a class="btn" href="/"><svg class="i" aria-hidden="true"><use href="/prep/icones.svg#i-library"/></svg><span>Biblioteca</span></a>
+    </nav>
+  </div>
+</header>
+
+<main class="conteudo">
+  <form class="entrar" id="f-entrar" autocomplete="on">
+    <span class="entrar-ico"><svg class="i" aria-hidden="true"><use href="/prep/icones.svg#i-lock"/></svg></span>
+    <h1>Gerenciar acervo</h1>
+    <p>Digite a senha para baixar, apagar ou acrescentar acervos. A biblioteca continua aberta para todo mundo.</p>
+    <input type="text" name="username" value="admin" autocomplete="username" hidden>
+    <div class="add-link">
+      <svg class="i" aria-hidden="true"><use href="/prep/icones.svg#i-lock"/></svg>
+      <input type="password" id="senha" name="password" placeholder="Senha" autocomplete="current-password" required autofocus>
+    </div>
+    <div class="entrar-erro" id="erro" role="alert" hidden></div>
+    <button class="btn btn-pri" type="submit" id="b-entrar">Entrar</button>
+  </form>
+</main>
+
+<script>
+document.getElementById("f-entrar").addEventListener("submit", async (ev) => {
+  ev.preventDefault();
+  const botao = document.getElementById("b-entrar"), erro = document.getElementById("erro"), campo = document.getElementById("senha");
+  botao.disabled = true; botao.textContent = "Entrando…"; erro.hidden = true;
+  try {
+    const r = await fetch("/api/entrar", { method: "POST", headers: { "X-Prep-Admin": "1", "Content-Type": "application/json" },
+      body: JSON.stringify({ senha: campo.value }) });
+    if (r.ok) { location.reload(); return; }
+    erro.textContent = r.status === 401 ? "Senha incorreta." : `Não deu certo (o servidor respondeu ${r.status}).`;
+  } catch (e) {
+    erro.textContent = "Não consegui falar com o servidor.";
+  }
+  erro.hidden = false;
+  botao.disabled = false; botao.textContent = "Entrar";
+  campo.select();
+});
+</script>
+</body>
+</html>

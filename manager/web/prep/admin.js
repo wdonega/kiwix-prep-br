@@ -41,6 +41,7 @@ function falta(seg) {
 
 async function api(metodo, caminho) {
   const r = await fetch(caminho, { method: metodo, headers: { "X-Prep-Admin": "1" }, cache: "no-store" });
+  if (r.status === 401) { location.reload(); return new Promise(() => {}); } // sessão expirou: volta para a senha
   const j = await r.json().catch(() => ({}));
   if (!r.ok) throw new Error(j.erro || `HTTP ${r.status}`);
   return j;
@@ -215,6 +216,7 @@ function render() {
   $("s-verificado").textContent = est.verificando ? "verificando…" : quando(est.verificado_em) || "ainda não";
   $("b-verificar").disabled = est.verificando;
   $("b-verificar").querySelector(".i").classList.toggle("girando", est.verificando);
+  $("b-sair").hidden = !est.com_senha;
   $("s-catalogo").textContent = `Prep Wiki BR ${est.versao === "dev" ? "(versão local)" : est.versao} · catálogo v${est.catalogo_versao}`;
 
   const falhas = itens.filter((i) => i.erro_verificacao).length;
@@ -311,6 +313,7 @@ const linhaErro = (msg) => `<div class="lin-erro">${ico("alert")}<span>${esc(msg
 
 async function apiJson(caminho, corpo) {
   const r = await fetch(caminho, { method: "POST", headers: { "X-Prep-Admin": "1", "Content-Type": "application/json" }, body: JSON.stringify(corpo) });
+  if (r.status === 401) { location.reload(); return new Promise(() => {}); }
   const j = await r.json().catch(() => ({}));
   if (!r.ok) throw new Error(j.erro || `HTTP ${r.status}`);
   return j;
@@ -408,6 +411,11 @@ const soltar = $("soltar");
 ["dragenter", "dragover"].forEach((t) => soltar.addEventListener(t, (ev) => { ev.preventDefault(); soltar.classList.add("sobre"); }));
 ["dragleave", "drop"].forEach((t) => soltar.addEventListener(t, (ev) => { ev.preventDefault(); soltar.classList.remove("sobre"); }));
 soltar.addEventListener("drop", (ev) => enviarArquivo(ev.dataTransfer.files[0]));
+
+$("b-sair").addEventListener("click", async () => {
+  await api("POST", "/api/sair").catch(() => {});
+  location.reload();
+});
 
 document.addEventListener("visibilitychange", () => { if (!document.hidden) atualizar(); });
 atualizar();

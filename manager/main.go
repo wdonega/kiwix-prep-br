@@ -59,6 +59,7 @@ type App struct {
 	httpFora *http.Client // para endereços informados pela pessoa: não alcança a própria máquina
 	urlKiwix *url.URL
 	ctx      context.Context
+	porteiro *Porteiro
 
 	mu               sync.Mutex
 	est              *Estado
@@ -163,6 +164,9 @@ func main() {
 	if a.est, err = carregarEstado(a.caminhoEstado()); err != nil {
 		log.Fatalf("estado.json: %v", err)
 	}
+	if a.porteiro, err = novoPorteiro(cfg.Dados, os.Getenv("PREP_SENHA")); err != nil {
+		log.Fatalf("senha: %v", err)
+	}
 	a.remontarCatalogo()
 	a.adotarArquivosSoltos()
 	if err := a.est.sincronizarComDisco(cfg.Dados, a.cat()); err != nil {
@@ -192,6 +196,11 @@ func main() {
 	logf("dados em %s · catálogo v%d com %d ZIMs · %d da pessoa · %d instalados", cfg.Dados, cat.Versao, len(cat.Itens),
 		len(a.est.Personalizados), len(a.est.Instalados))
 	logf("Prep Wiki BR %s · gerenciador em http://%s/admin/", versao, cfg.Endereco)
+	if a.porteiro.ativo() {
+		logf("admin protegido por senha (PREP_SENHA)")
+	} else {
+		logf("admin sem senha: defina PREP_SENHA para proteger")
+	}
 	if err := srv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 		log.Fatal(err)
 	}
@@ -252,10 +261,12 @@ func (a *App) rotas() http.Handler {
 	mux.HandleFunc("POST /api/meus/inspecionar", a.apiInspecionarLink)
 	mux.HandleFunc("POST /api/meus/link", a.apiAdicionarLink)
 	mux.HandleFunc("PUT /api/meus/arquivo", a.apiEnviarArquivo)
+	mux.HandleFunc("POST /api/entrar", a.porteiro.apiEntrar)
+	mux.HandleFunc("POST /api/sair", a.porteiro.apiSair)
 
 	// todo o resto é do kiwix-serve
 	mux.Handle("/", a.proxyKiwix())
-	return protegerAcoes(mux)
+	return protegerAcoes(a.porteiro.proteger(mux, pagina(web, "entrar.html")))
 }
 
 // protegerAcoes: toda ação (POST) exige um cabeçalho próprio. Navegador não manda cabeçalho
@@ -332,6 +343,7 @@ func (a *App) apiEstado(w http.ResponseWriter, r *http.Request) {
 	}
 	resp := map[string]any{
 		"versao":          versao,
+		"com_senha":       a.porteiro.ativo(),
 		"catalogo_versao": a.cat().Versao,
 		"grupos":          a.cat().Grupos,
 		"verificado_em":   a.est.VerificadoEm,

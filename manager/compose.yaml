@@ -10,6 +10,7 @@ name: prep-wiki-br
 #   PREP_PASTA=./dados     onde ficam os ZIMs baixados (a pasta precisa existir e ser do usuário abaixo)
 #   PREP_UID=1000          usuário e grupo donos da pasta (veja os seus com: id -u ; id -g)
 #   PREP_GID=1000
+#   PREP_SENHA=...         senha para abrir o gerenciador (sem ela, o admin fica aberto)
 services:
   prep:
     build: .
@@ -22,6 +23,7 @@ services:
       - ${PREP_PASTA:-./dados}:/data
     environment:
       TZ: America/Sao_Paulo
+      PREP_SENHA: ${PREP_SENHA:-}
     # o gerenciador só escreve na pasta dos ZIMs; o resto do container é só leitura e sem privilégios
     read_only: true
     tmpfs:
